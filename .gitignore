@@ -1,0 +1,7 @@
+summary.txt
+.idea/
+*.class
+*.iml
+*.iws
+out/
+test/
