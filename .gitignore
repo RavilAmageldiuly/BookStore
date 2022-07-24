@@ -5,3 +5,4 @@ summary.txt
 *.iws
 out/
 test/
+target/
