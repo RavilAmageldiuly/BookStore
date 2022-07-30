@@ -1,18 +1,24 @@
-package kz.halykacademy.bookstore;
+package kz.halykacademy.bookstore.web.books;
+
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+
 public class Book {
 
-    private int id;
+    private long id;
     private double price;
-    private List<Author> authorList;
-    private Publisher publisher;
+    private List<String> authorList;
+    private String publisher;
     private String title;
     private int numberOfPages;
     private int releaseYear;
 
-    public Book(int price, List<Author> authorList, Publisher publisher, String title, int numberOfPages, int releaseYear) {
+    public Book() {}
+
+    public Book(long id, double price, List<String> authorList, String publisher, String title, int numberOfPages, int releaseYear) {
+        this.id = id;
         this.price = price;
         this.authorList = authorList;
         this.publisher = publisher;
@@ -21,16 +27,11 @@ public class Book {
         this.releaseYear = releaseYear;
     }
 
-    public Book(int id) {
-        super();
-        this.id = id;
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -42,19 +43,19 @@ public class Book {
         this.price = price;
     }
 
-    public List<Author> getAuthorList() {
+    public List<String> getAuthorList() {
         return authorList;
     }
 
-    public void setAuthorList(List<Author> authorList) {
+    public void setAuthorList(List<String> authorList) {
         this.authorList = authorList;
     }
 
-    public Publisher getPublisher() {
+    public String getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(Publisher publisher) {
+    public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
 
@@ -88,7 +89,7 @@ public class Book {
                 "id=" + id +
                 ", price=" + price +
                 ", authorList=" + authorList.toString() +
-                ", publisher='" + publisher.toString() + '\'' +
+                ", publisher='" + publisher + '\'' +
                 ", title='" + title + '\'' +
                 ", numberOfPages=" + numberOfPages +
                 ", releaseYear=" + releaseYear +

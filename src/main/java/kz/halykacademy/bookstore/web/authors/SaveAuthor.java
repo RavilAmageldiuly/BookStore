@@ -1,36 +1,36 @@
-package kz.halykacademy.bookstore;
+package kz.halykacademy.bookstore.web.authors;
+
+import kz.halykacademy.bookstore.web.books.Book;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class Author {
 
-    private int id;
+public class SaveAuthor {
+
+    private long id;
     private String firstName;
     private String lastName;
     private String patronymic;
     private LocalDate birthday;
     private List<Book> booksList;
 
-    public Author(String firstName, String lastName, String patronymic, LocalDate birthday) {
+    public SaveAuthor() {}
+
+    public SaveAuthor(String firstName, String lastName, String patronymic, LocalDate birthday, List<Book> booksList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
         this.birthday = birthday;
-        this.booksList = new ArrayList<>();
+        this.booksList = booksList;
     }
 
-    public Author(int id) {
-        super();
+    public void setId(long id) {
         this.id = id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

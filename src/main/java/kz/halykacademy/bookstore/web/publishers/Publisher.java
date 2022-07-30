@@ -1,29 +1,30 @@
-package kz.halykacademy.bookstore;
+package kz.halykacademy.bookstore.web.publishers;
 
-import java.util.ArrayList;
+import kz.halykacademy.bookstore.web.books.Book;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
+
 
 public class Publisher {
 
-    private int id;
+    private long id;
     private String name;
     private List<Book> publishedBooks;
 
-    public Publisher(String name) {
-        this.name = name;
-        this.publishedBooks = new ArrayList<>();
-    }
+    public Publisher() {}
 
-    public Publisher(int id) {
-        super();
+    public Publisher(long id, String name, List<Book> publishedBooks) {
         this.id = id;
+        this.name = name;
+        this.publishedBooks = publishedBooks;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
