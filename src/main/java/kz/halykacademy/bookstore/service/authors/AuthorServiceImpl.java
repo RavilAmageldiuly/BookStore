@@ -73,8 +73,7 @@ public class AuthorServiceImpl implements AuthorService {
                 author.getBirthday()
         );
 
-        AuthorEntity updated = authorRepository.getReferenceById(id);
-        return updated.toDto();
+        return authorRepository.getReferenceById(id).toDto();
     }
 
     @Override

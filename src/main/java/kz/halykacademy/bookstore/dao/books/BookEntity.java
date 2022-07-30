@@ -33,8 +33,8 @@ public class BookEntity {
     @ManyToMany(mappedBy = "booksList")
     private List<AuthorEntity> authorList = new ArrayList<>();
 
-    @Column
-    private int publisher_id;
+//    @Column(name = "publisher_id")
+//    private long publisher_id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private PublisherEntity publisher;
@@ -52,7 +52,8 @@ public class BookEntity {
         return new Book(
                 this.book_id,
                 this.price,
-                getAllAuthors(),
+                null,
+//                getAllAuthors(),
                 this.publisher.getName(),
                 this.title,
                 this.numberOfPages,

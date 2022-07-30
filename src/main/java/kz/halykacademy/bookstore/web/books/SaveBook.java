@@ -1,7 +1,5 @@
 package kz.halykacademy.bookstore.web.books;
 
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 
@@ -9,18 +7,18 @@ public class SaveBook {
 
     private long id;
     private double price;
-    private List<Long> authorList;
-    private String publisher;
+    private List<String> authorList;
+    private Long publisherId;
     private String title;
     private int numberOfPages;
     private int releaseYear;
 
     public SaveBook() {}
 
-    public SaveBook(int price, List<Long> authorList, String publisher, String title, int numberOfPages, int releaseYear) {
+    public SaveBook(int price, List<String> authorList, Long publisherId, String title, int numberOfPages, int releaseYear) {
         this.price = price;
         this.authorList = authorList;
-        this.publisher = publisher;
+        this.publisherId = publisherId;
         this.title = title;
         this.numberOfPages = numberOfPages;
         this.releaseYear = releaseYear;
@@ -42,20 +40,20 @@ public class SaveBook {
         this.price = price;
     }
 
-    public List<Long> getAuthorList() {
+    public List<String> getAuthorList() {
         return authorList;
     }
 
-    public void setAuthorList(List<Long> authorList) {
+    public void setAuthorList(List<String> authorList) {
         this.authorList = authorList;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public Long getPublisherId() {
+        return publisherId;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
+    public void setPublisherId(Long publisherId) {
+        this.publisherId = publisherId;
     }
 
     public String getTitle() {
@@ -88,7 +86,7 @@ public class SaveBook {
                 "id=" + id +
                 ", price=" + price +
                 ", authorList=" + authorList.toString() +
-                ", publisher='" + publisher + '\'' +
+                ", publisher='" + publisherId + '\'' +
                 ", title='" + title + '\'' +
                 ", numberOfPages=" + numberOfPages +
                 ", releaseYear=" + releaseYear +

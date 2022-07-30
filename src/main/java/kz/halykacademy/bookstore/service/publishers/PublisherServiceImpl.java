@@ -1,0 +1,58 @@
+package kz.halykacademy.bookstore.service.publishers;
+
+import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
+import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
+import kz.halykacademy.bookstore.web.publishers.Publisher;
+import kz.halykacademy.bookstore.web.publishers.SavePublisher;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class PublisherServiceImpl implements PublisherService{
+
+    private final PublisherRepository publisherRepository;
+
+    public PublisherServiceImpl(PublisherRepository publisherRepository) {
+        this.publisherRepository = publisherRepository;
+    }
+
+    @Override
+    public List<Publisher> getAll() {
+        return publisherRepository.findAll()
+                .stream()
+                .map(PublisherEntity::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Publisher getPublisher(long id) {
+        return publisherRepository.getReferenceById(id).toDto();
+    }
+
+    @Transactional
+    @Override
+    public Publisher putPublisher(long id, Publisher publisher) {
+        publisherRepository.updatePublisherById(id, publisher.getName());
+        return publisherRepository.getReferenceById(id).toDto();
+    }
+
+    @Override
+    public Publisher postPublisher(SavePublisher publisher) {
+        PublisherEntity saved = publisherRepository.save(
+                new PublisherEntity(
+                        publisher.getId(),
+                        publisher.getName(),
+                        null
+                )
+        );
+        return saved.toDto();
+    }
+
+    @Override
+    public void deletePublisher(long id) {
+        publisherRepository.deleteById(id);
+    }
+}
