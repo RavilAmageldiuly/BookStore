@@ -32,7 +32,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public Book putBook(@PathVariable Long id, @RequestBody Book book) {
+    public Book putBook(@PathVariable Long id, @RequestBody SaveBook book) {
         return bookService.putBook(id, book);
     }
 

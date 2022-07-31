@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
 
-    // Add field publisherId and then, authorList
+    // Add field authorList
     @Modifying
-    @Query("update BookEntity b set b.price = ?2, b.title = ?3, b.numberOfPages = ?4, b.releaseYear = ?5 where b.book_id = ?1")
-    Integer updateBookById(long id, double price, String title, int numberOfPages, int releaseYear);
+    @Query(value = "update books set price = ?2, title = ?3, publisher_id = ?4, number_of_pages = ?5, release_year = ?6 where book_id = ?1", nativeQuery = true)
+    Integer updateBookById(long id, double price, String title, long publisherId, int numberOfPages, int releaseYear);
 }

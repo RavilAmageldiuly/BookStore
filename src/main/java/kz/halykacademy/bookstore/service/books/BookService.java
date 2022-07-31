@@ -12,7 +12,7 @@ public interface BookService {
 
     Book getBook(long id);
 
-    Book putBook(long id, Book book);
+    Book putBook(long id, SaveBook book);
 
     Book postBook(SaveBook saveBook);
 

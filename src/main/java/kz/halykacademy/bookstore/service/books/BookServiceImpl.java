@@ -38,21 +38,21 @@ public class BookServiceImpl implements BookService{
 
     @Transactional
     @Override
-    public Book putBook(long id, Book book) {
+    public Book putBook(long id, SaveBook book) {
         bookRepository.updateBookById(
                 id,
                 book.getPrice(),
                 book.getTitle(),
-                book.getReleaseYear(),
-                book.getNumberOfPages()
+                book.getPublisherId(),
+                book.getNumberOfPages(),
+                book.getReleaseYear()
         );
         return bookRepository.getReferenceById(id).toDto();
     }
 
     @Override
     public Book postBook(SaveBook saveBook) {
-//        long publisher_id = 1;
-        BookEntity saved = bookRepository.save(
+        return bookRepository.save(
                 new BookEntity(
                         saveBook.getId(),
                         saveBook.getPrice(),
@@ -62,10 +62,11 @@ public class BookServiceImpl implements BookService{
                         saveBook.getNumberOfPages(),
                         saveBook.getReleaseYear()
                 )
-        );
-        return saved.toDto();
+        ).toDto();
     }
 
+
+    // Deletes record also in publisher Must DEBUG!!!
     @Override
     public void deleteBook(long id) {
         bookRepository.deleteById(id);
