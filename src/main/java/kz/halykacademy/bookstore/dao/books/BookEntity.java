@@ -33,7 +33,7 @@ public class BookEntity {
     @ManyToMany(mappedBy = "booksList")
     private List<AuthorEntity> authorList = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "publisher_id", referencedColumnName = "publisher_id")
     private PublisherEntity publisher;
 

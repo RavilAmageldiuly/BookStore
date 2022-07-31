@@ -65,8 +65,6 @@ public class BookServiceImpl implements BookService{
         ).toDto();
     }
 
-
-    // Deletes record also in publisher Must DEBUG!!!
     @Override
     public void deleteBook(long id) {
         bookRepository.deleteById(id);
