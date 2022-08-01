@@ -8,7 +8,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,11 +37,15 @@ public class PublisherEntity {
         return new Publisher(
                 this.publisher_id,
                 this.name,
-                entityToDto()
+                bookEntityToDto()
         );
     }
 
-    private List<Book> entityToDto() {
-        return publishedBooks.stream().map(BookEntity::toDto).collect(Collectors.toList());
+    private List<Book> bookEntityToDto() {
+        try {
+            return publishedBooks.stream().map(BookEntity::toDto).collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            return new ArrayList<>();
+        }
     }
 }

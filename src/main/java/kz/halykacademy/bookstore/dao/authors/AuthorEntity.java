@@ -53,10 +53,14 @@ public class AuthorEntity {
         );
     }
 
-    private List<Book> bookEntityToDto(){
-        return booksList.stream()
-                .map(BookEntity::toDto)
-                .collect(Collectors.toList());
+    private List<Book> bookEntityToDto() {
+        try {
+            return booksList.stream()
+                    .map(BookEntity::toDto)
+                    .collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            return new ArrayList<>();
+        }
     }
 
     public String getAuthorFullName() {
