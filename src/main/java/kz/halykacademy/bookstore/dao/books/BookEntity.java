@@ -4,6 +4,7 @@ package kz.halykacademy.bookstore.dao.books;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
+import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.books.Book;
 import lombok.*;
 
@@ -29,8 +30,12 @@ public class BookEntity {
     @Column
     private double price;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "booksList")
+    @ManyToMany
+    @JoinTable(
+            name = "author_book",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
     private List<AuthorEntity> authorList = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -50,8 +55,7 @@ public class BookEntity {
         return new Book(
                 this.book_id,
                 this.price,
-                null,
-//                getAllAuthors(),
+                getAllAuthors(),
                 this.publisher.getName(),
                 this.title,
                 this.numberOfPages,
@@ -64,4 +68,5 @@ public class BookEntity {
                 .map(AuthorEntity::getAuthorFullName)
                 .collect(Collectors.toList());
     }
+
 }

@@ -7,7 +7,7 @@ public class SaveBook {
 
     private long id;
     private double price;
-    private List<String> authorList;
+    private List<Long> authorList;
     private Long publisherId;
     private String title;
     private int numberOfPages;
@@ -15,7 +15,7 @@ public class SaveBook {
 
     public SaveBook() {}
 
-    public SaveBook(int price, List<String> authorList, Long publisherId, String title, int numberOfPages, int releaseYear) {
+    public SaveBook(int price, List<Long> authorList, Long publisherId, String title, int numberOfPages, int releaseYear) {
         this.price = price;
         this.authorList = authorList;
         this.publisherId = publisherId;
@@ -40,11 +40,11 @@ public class SaveBook {
         this.price = price;
     }
 
-    public List<String> getAuthorList() {
+    public List<Long> getAuthorList() {
         return authorList;
     }
 
-    public void setAuthorList(List<String> authorList) {
+    public void setAuthorList(List<Long> authorList) {
         this.authorList = authorList;
     }
 

@@ -1,5 +1,6 @@
 package kz.halykacademy.bookstore.dao.authors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.books.Book;
@@ -37,12 +38,8 @@ public class AuthorEntity {
     @Column
     private LocalDate birthday;
 
-    @ManyToMany
-    @JoinTable(
-            name = "author_book",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @JsonIgnore
+    @ManyToMany(mappedBy = "authorList")
     private List<BookEntity> booksList = new ArrayList<>();
 
     public Author toDto() {
@@ -52,8 +49,7 @@ public class AuthorEntity {
                 this.lastName,
                 this.patronymic,
                 this.birthday,
-                null
-//                bookEntityToDto()
+                bookEntityToDto()
         );
     }
 
