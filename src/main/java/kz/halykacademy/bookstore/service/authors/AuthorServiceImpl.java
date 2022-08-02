@@ -77,14 +77,14 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author postAuthor(SaveAuthor author) {
+    public Author postAuthor(SaveAuthor saveAuthor) {
         AuthorEntity saved = authorRepository.save(
                 new AuthorEntity(
-                        author.getId(),
-                        author.getFirstName(),
-                        author.getLastName(),
-                        author.getPatronymic(),
-                        author.getBirthday(),
+                        saveAuthor.getId(),
+                        saveAuthor.getFirstName(),
+                        saveAuthor.getLastName(),
+                        saveAuthor.getPatronymic(),
+                        saveAuthor.getBirthday(),
                         null
                 )
         );
@@ -94,5 +94,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteAuthor(long id) {
         authorRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Author> getAuthorsByFIO(String firstName, String lastName, String patronymic) {
+        return authorRepository.findAllByFirstNameContainingAndLastNameContainingAndPatronymicContaining(firstName, lastName, patronymic).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
     }
 }

@@ -32,12 +32,17 @@ public class PublisherController {
     }
 
     @PutMapping("/{id}")
-    public Publisher updatePublisher(@PathVariable Long id, @RequestBody Publisher publisher) {
+    public Publisher updatePublisher(@PathVariable Long id, @RequestBody SavePublisher publisher) {
         return publisherService.putPublisher(id, publisher);
     }
 
     @DeleteMapping("/{id}")
     public void deletePublisher(@PathVariable Long id) {
         publisherService.deletePublisher(id);
+    }
+
+    @GetMapping("/getByName")
+    public List<Publisher> getAllPublishersByName(@RequestParam(value = "name") String name) {
+        return publisherService.getPublishersByName(name);
     }
 }

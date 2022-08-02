@@ -40,4 +40,9 @@ public class BookController {
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
     }
+
+    @GetMapping("/getByTitle")
+    public List<Book> getBooksByTitle(@RequestParam(value = "title") String title) {
+        return bookService.getBooksByTitle(title);
+    }
 }

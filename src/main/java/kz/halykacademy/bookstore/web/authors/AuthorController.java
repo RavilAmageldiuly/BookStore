@@ -26,8 +26,8 @@ public class AuthorController {
     }
 
     @PostMapping
-    public Author postAuthor(@RequestBody SaveAuthor author) {
-        return authorService.postAuthor(author);
+    public Author postAuthor(@RequestBody SaveAuthor saveAuthor) {
+        return authorService.postAuthor(saveAuthor);
     }
 
     @PutMapping("/{id}")
@@ -38,5 +38,10 @@ public class AuthorController {
     @DeleteMapping("/{id}")
     public void deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
+    }
+
+    @GetMapping("/getByFio")
+    public List<Author> getAuthorsByFio(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
+        return authorService.getAuthorsByFIO(firstName, lastName, patronymic);
     }
 }

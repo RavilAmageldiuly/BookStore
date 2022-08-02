@@ -11,9 +11,11 @@ public interface PublisherService {
 
     Publisher getPublisher(long id);
 
-    Publisher putPublisher(long id, Publisher publisher);
+    Publisher putPublisher(long id, SavePublisher publisher);
 
-    Publisher postPublisher(SavePublisher publisher);
+    Publisher postPublisher(SavePublisher savePublisher);
 
     void deletePublisher(long id);
+
+    List<Publisher> getPublishersByName(String name);
 }

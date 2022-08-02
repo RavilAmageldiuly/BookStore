@@ -82,6 +82,11 @@ public class BookServiceImpl implements BookService{
         bookRepository.deleteById(id);
     }
 
+    @Override
+    public List<Book> getBooksByTitle(String title) {
+        return bookRepository.getBooksByTitle(title).stream().map(BookEntity::toDto).collect(Collectors.toList());
+    }
+
     public List<AuthorEntity> getAllAuthors(SaveBook saveBook) {
         return saveBook.getAuthorList().stream().map(authorRepository::getReferenceById).collect(Collectors.toList());
     }

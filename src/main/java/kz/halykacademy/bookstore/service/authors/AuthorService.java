@@ -19,9 +19,11 @@ public interface AuthorService {
 
     Author putAuthor(long id, SaveAuthor author);
 
-    Author postAuthor(SaveAuthor author);
+    Author postAuthor(SaveAuthor saveAuthor);
 
     void deleteAuthor(long id);
+
+    List<Author> getAuthorsByFIO(String firstName, String lastName, String patronymic);
 }
 
 

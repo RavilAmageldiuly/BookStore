@@ -17,4 +17,6 @@ public interface BookService {
     Book postBook(SaveBook saveBook);
 
     void deleteBook(long id);
+
+    List<Book> getBooksByTitle(String title);
 }

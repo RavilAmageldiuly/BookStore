@@ -34,17 +34,17 @@ public class PublisherServiceImpl implements PublisherService{
 
     @Transactional
     @Override
-    public Publisher putPublisher(long id, Publisher publisher) {
+    public Publisher putPublisher(long id, SavePublisher publisher) {
         publisherRepository.updatePublisherById(id, publisher.getName());
         return publisherRepository.getReferenceById(id).toDto();
     }
 
     @Override
-    public Publisher postPublisher(SavePublisher publisher) {
+    public Publisher postPublisher(SavePublisher savePublisher) {
         PublisherEntity saved = publisherRepository.save(
                 new PublisherEntity(
-                        publisher.getId(),
-                        publisher.getName(),
+                        savePublisher.getId(),
+                        savePublisher.getName(),
                         null
                 )
         );
@@ -54,5 +54,11 @@ public class PublisherServiceImpl implements PublisherService{
     @Override
     public void deletePublisher(long id) {
         publisherRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Publisher> getPublishersByName(String name) {
+        List<PublisherEntity> publishers = publisherRepository.getPublishersByName(name);
+        return publishers.stream().map(PublisherEntity::toDto).collect(Collectors.toList());
     }
 }
