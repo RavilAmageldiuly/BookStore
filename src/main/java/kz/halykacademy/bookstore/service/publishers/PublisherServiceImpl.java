@@ -2,6 +2,7 @@ package kz.halykacademy.bookstore.service.publishers;
 
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
+import kz.halykacademy.bookstore.web.ExceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.publishers.Publisher;
 import kz.halykacademy.bookstore.web.publishers.SavePublisher;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,16 @@ public class PublisherServiceImpl implements PublisherService{
 
     @Override
     public Publisher getPublisher(long id) {
-        return publisherRepository.getReferenceById(id).toDto();
+        return publisherRepository.findById(id)
+                .map(PublisherEntity::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Publisher not found. Invalid id supplied!"));
     }
 
     @Transactional
     @Override
     public Publisher putPublisher(long id, SavePublisher publisher) {
+        if (!publisherRepository.existsById(id))
+            throw new ResourceNotFoundException("Publisher not found. Invalid id supplied!");
         publisherRepository.updatePublisherById(id, publisher.getName());
         return publisherRepository.getReferenceById(id).toDto();
     }
@@ -53,6 +58,8 @@ public class PublisherServiceImpl implements PublisherService{
 
     @Override
     public void deletePublisher(long id) {
+        if (!publisherRepository.existsById(id))
+            throw new ResourceNotFoundException("Publisher not found. Invalid id supplied!");
         publisherRepository.deleteById(id);
     }
 

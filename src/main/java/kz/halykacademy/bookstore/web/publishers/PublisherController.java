@@ -2,9 +2,13 @@ package kz.halykacademy.bookstore.web.publishers;
 
 
 import kz.halykacademy.bookstore.service.publishers.PublisherServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/publishers")
@@ -17,8 +21,10 @@ public class PublisherController {
     }
 
     @GetMapping
-    public List<Publisher> findAll() {
-        return publisherService.getAll();
+    public Page<Publisher> findAll(Pageable pageRequest) {
+        return new PageImpl(
+                publisherService.getAll().stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{id}")

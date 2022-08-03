@@ -5,6 +5,7 @@ import kz.halykacademy.bookstore.dao.authors.AuthorRepository;
 import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.dao.books.BookRepository;
 import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
+import kz.halykacademy.bookstore.web.ExceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.books.Book;
 import kz.halykacademy.bookstore.web.books.SaveBook;
 import org.springframework.stereotype.Service;
@@ -40,13 +41,28 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Book getBook(long id) {
-        return bookRepository.getReferenceById(id).toDto();
+        return bookRepository.findById(id)
+                .map(BookEntity::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found. Invalid id supplied!"));
     }
 
 
     @Transactional
     @Override
     public Book putBook(long id, SaveBook saveBook) {
+        if (!bookRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Book not found. Invalid id supplied!");
+        } else if (!publisherRepository.existsById(saveBook.getPublisherId())) {
+            throw new ResourceNotFoundException("Invalid publisher id supplied!");
+        }
+
+        for (Long authorId: saveBook.getAuthorList()) {
+            if (!authorRepository.existsById(authorId)) {
+                throw new ResourceNotFoundException("Invalid author id supplied! Author with id: " + authorId +
+                        " does not exists");
+            }
+        }
+
         return bookRepository.save(
                 new BookEntity(
                     id,
@@ -58,12 +74,22 @@ public class BookServiceImpl implements BookService{
                     saveBook.getReleaseYear()
                 )
         ).toDto();
-
     }
 
 
     @Override
     public Book postBook(SaveBook saveBook) {
+
+        if (!publisherRepository.existsById(saveBook.getPublisherId())) {
+            throw new ResourceNotFoundException("Invalid publisher id supplied!");
+        }
+
+        for (Long authorId: saveBook.getAuthorList()) {
+            if (!authorRepository.existsById(authorId)) {
+                throw new ResourceNotFoundException("Invalid author id supplied! Author with id: " + authorId +
+                        " does not exists");
+            }
+        }
         return bookRepository.save(
                 new BookEntity(
                         saveBook.getId(),
@@ -79,6 +105,10 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public void deleteBook(long id) {
+        if (!bookRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Book not found. Invalid id supplied!");
+        }
+
         bookRepository.deleteById(id);
     }
 
