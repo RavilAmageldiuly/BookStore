@@ -2,8 +2,10 @@ package kz.halykacademy.bookstore.dao.authors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kz.halykacademy.bookstore.dao.books.BookEntity;
+import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.books.Book;
+import kz.halykacademy.bookstore.web.genres.Genre;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,7 +51,8 @@ public class AuthorEntity {
                 this.lastName,
                 this.patronymic,
                 this.birthday,
-                bookEntityToDto()
+                bookEntityToDto(),
+                getGenres()
         );
     }
 
@@ -65,5 +68,17 @@ public class AuthorEntity {
 
     public String getAuthorFullName() {
         return firstName + " " + lastName;
+    }
+
+    private List<String> getGenres() {
+        List<String> genreList = new ArrayList<>();
+        try {
+            for (BookEntity book: booksList) {
+                genreList.addAll(book.getGenre());
+            }
+            return genreList;
+        } catch (NullPointerException e) {
+            return new ArrayList<>();
+        }
     }
 }

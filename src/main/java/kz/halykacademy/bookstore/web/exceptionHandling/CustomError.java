@@ -1,4 +1,4 @@
-package kz.halykacademy.bookstore.web.ExceptionHandling;
+package kz.halykacademy.bookstore.web.exceptionHandling;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

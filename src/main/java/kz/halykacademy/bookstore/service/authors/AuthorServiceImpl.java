@@ -2,27 +2,15 @@ package kz.halykacademy.bookstore.service.authors;
 
 import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.dao.authors.AuthorRepository;
-import kz.halykacademy.bookstore.web.ExceptionHandling.ResourceNotFoundException;
+import kz.halykacademy.bookstore.service.books.BookServiceImpl;
+import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.authors.SaveAuthor;
-import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-
-/**
- * Допиши Везьде Exception Handling!!!
- * <p>
- * Внедрить Pageble!
- * <p>
- * Внедрить Exception Handling!
- * <p>
- * Поменять openApi спецификацию
- */
 
 
 @Service

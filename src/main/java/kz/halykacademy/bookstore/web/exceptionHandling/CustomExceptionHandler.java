@@ -1,4 +1,4 @@
-package kz.halykacademy.bookstore.web.ExceptionHandling;
+package kz.halykacademy.bookstore.web.exceptionHandling;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,11 +1,11 @@
 package kz.halykacademy.bookstore.dao.books;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
+import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
-import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.books.Book;
+import kz.halykacademy.bookstore.web.genres.Genre;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +25,7 @@ public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id", nullable = false)
-    private long book_id;
+    private long bookId;
 
     @Column
     private double price;
@@ -51,21 +51,36 @@ public class BookEntity {
     @Column(name = "release_year")
     private int releaseYear;
 
+    @ManyToMany
+    @JoinTable(
+            name = "genre_book",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private List<GenreEntity> genreList = new ArrayList<>();
+
     public Book toDto() {
         return new Book(
-                this.book_id,
+                this.bookId,
                 this.price,
                 getAllAuthors(),
                 this.publisher.getName(),
                 this.title,
                 this.numberOfPages,
-                this.releaseYear
+                this.releaseYear,
+                getGenre()
         );
     }
 
     private List<String> getAllAuthors() {
         return authorList.stream()
                 .map(AuthorEntity::getAuthorFullName)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getGenre() {
+        return genreList.stream()
+                .map(GenreEntity::getGenreName)
                 .collect(Collectors.toList());
     }
 

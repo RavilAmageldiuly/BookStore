@@ -1,6 +1,8 @@
 package kz.halykacademy.bookstore.web.authors;
 
+import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.service.authors.AuthorServiceImpl;
+import kz.halykacademy.bookstore.service.books.BookServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +16,12 @@ import java.util.stream.Collectors;
 public class AuthorController {
 
     private final AuthorServiceImpl authorService;
+    private final BookServiceImpl bookService;
 
-    public AuthorController(AuthorServiceImpl authorService) {
+
+    public AuthorController(AuthorServiceImpl authorService, BookServiceImpl bookService) {
         this.authorService = authorService;
+        this.bookService = bookService;
     }
 
     @GetMapping
@@ -49,5 +54,10 @@ public class AuthorController {
     @GetMapping("/getByFio")
     public List<Author> getAuthorsByFio(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
         return authorService.getAuthorsByFIO(firstName, lastName, patronymic);
+    }
+
+    @GetMapping("/findByGenre")
+    public List<Author> getAuthorsByGenre(@RequestParam(name = "values") List<String> genres) {
+        return bookService.getAuthorsByGenre(genres).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
     }
 }

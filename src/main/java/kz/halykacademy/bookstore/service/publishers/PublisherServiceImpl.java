@@ -2,7 +2,7 @@ package kz.halykacademy.bookstore.service.publishers;
 
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
-import kz.halykacademy.bookstore.web.ExceptionHandling.ResourceNotFoundException;
+import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.publishers.Publisher;
 import kz.halykacademy.bookstore.web.publishers.SavePublisher;
 import org.springframework.stereotype.Service;

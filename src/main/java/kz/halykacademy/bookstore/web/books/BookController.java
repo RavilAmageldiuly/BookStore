@@ -51,4 +51,9 @@ public class BookController {
     public List<Book> getBooksByTitle(@RequestParam(value = "title") String title) {
         return bookService.getBooksByTitle(title);
     }
+
+    @GetMapping("/findByGenre")
+    public List<Book> getBooksByGenre(@RequestParam(value = "values") List<String> genres) {
+        return bookService.getBooksByGenre(genres);
+    }
 }
