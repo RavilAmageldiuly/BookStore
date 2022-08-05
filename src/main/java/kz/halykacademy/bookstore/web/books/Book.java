@@ -21,5 +21,5 @@ public class Book {
     private int numberOfPages;
     private int releaseYear;
     private List<String> genreList;
-
+    private double bookQuantity;
 }

@@ -24,11 +24,13 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+
+    // instead of other repo use their services
     private final PublisherRepository publisherRepository;
-
     private final AuthorRepository authorRepository;
-
     private final GenreRepository genreRepository;
+
+    //===============
 
     public BookServiceImpl(BookRepository bookRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
         this.bookRepository = bookRepository;
@@ -73,7 +75,8 @@ public class BookServiceImpl implements BookService {
                         saveBook.getTitle(),
                         saveBook.getNumberOfPages(),
                         saveBook.getReleaseYear(),
-                        getAllGenres(saveBook)
+                        getAllGenres(saveBook),
+                        saveBook.getBookQuantity()
                 )
         ).toDto();
     }
@@ -97,7 +100,8 @@ public class BookServiceImpl implements BookService {
                         saveBook.getTitle(),
                         saveBook.getNumberOfPages(),
                         saveBook.getReleaseYear(),
-                        getAllGenres(saveBook)
+                        getAllGenres(saveBook),
+                        saveBook.getBookQuantity()
                 )
         ).toDto();
     }
@@ -144,7 +148,7 @@ public class BookServiceImpl implements BookService {
     public List<Book> getBooksByGenre(List<String> genres) {
         List<Book> booksByGenre = new ArrayList<>();
         for (BookEntity book: bookRepository.findAll()) {
-            if (book.getGenre().containsAll(genres)) {
+            if (book.getGenre().containsAll(genres)) {      // Idea предлагает заменить на хашсет, в конце оптимизировать
                 booksByGenre.add(book.toDto());
             }
         }
@@ -154,7 +158,7 @@ public class BookServiceImpl implements BookService {
     public List<AuthorEntity> getAuthorsByGenre(List<String> genres) {
         List<AuthorEntity> authorsByGenre = new ArrayList<>();
         for (BookEntity book: bookRepository.findAll()) {
-            if (book.getGenre().containsAll(genres)) {
+            if (book.getGenre().containsAll(genres)) {          // Idea предлагает заменить на хашсет, в конце оптимизировать
                 authorsByGenre.addAll(book.getAuthorList());
             }
         }

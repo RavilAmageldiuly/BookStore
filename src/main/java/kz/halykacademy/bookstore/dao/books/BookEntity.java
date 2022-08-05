@@ -59,6 +59,9 @@ public class BookEntity {
     )
     private List<GenreEntity> genreList = new ArrayList<>();
 
+    @Column(name = "book_quantity")
+    private double bookQuantity;
+
     public Book toDto() {
         return new Book(
                 this.bookId,
@@ -68,7 +71,8 @@ public class BookEntity {
                 this.title,
                 this.numberOfPages,
                 this.releaseYear,
-                getGenre()
+                getGenre(),
+                this.bookQuantity
         );
     }
 
