@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<Order> getAll();
+    List<Order> findAll();
+
+    List<Order> getAll(String username);
 
     Order getOne(Long id);
 
-    Order postOrder(SaveOrder saveOrder);
+    Order postOrder(Long userId, SaveOrder saveOrder);
 
-    Order putOrder(Long id, SaveOrder saveOrder);
+    Order putOrder(Long orderId, SaveOrder saveOrder);
 
     void deleteOrder(Long id);
 }

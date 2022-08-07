@@ -33,7 +33,7 @@ public class BookController {
     }
 
     @PostMapping
-    public Book postBoot(@RequestBody SaveBook book) {
+    public Book postBook(@RequestBody SaveBook book) {
         return bookService.postBook(book);
     }
 
@@ -47,7 +47,7 @@ public class BookController {
         bookService.deleteBook(id);
     }
 
-    @GetMapping("/getByTitle")
+    @GetMapping("/findByTitle")
     public List<Book> getBooksByTitle(@RequestParam(value = "title") String title) {
         return bookService.getBooksByTitle(title);
     }

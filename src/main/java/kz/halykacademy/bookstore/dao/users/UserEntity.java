@@ -26,8 +26,8 @@ public class UserEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "user_login")
-    private String userLogin;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "user_password")
     private String userPassword;
@@ -45,7 +45,7 @@ public class UserEntity {
     public User toDto() {
         return new User(
                 this.userId,
-                this.userLogin,
+                this.username,
                 this.userPassword,
                 this.userRole,
                 this.blockFlag

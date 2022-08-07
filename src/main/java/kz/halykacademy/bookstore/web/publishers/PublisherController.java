@@ -47,7 +47,7 @@ public class PublisherController {
         publisherService.deletePublisher(id);
     }
 
-    @GetMapping("/getByName")
+    @GetMapping("/findByName")
     public List<Publisher> getAllPublishersByName(@RequestParam(value = "name") String name) {
         return publisherService.getPublishersByName(name);
     }

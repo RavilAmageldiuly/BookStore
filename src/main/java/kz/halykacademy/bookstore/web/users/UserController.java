@@ -2,6 +2,8 @@ package kz.halykacademy.bookstore.web.users;
 
 
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,19 +18,29 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping()
+    @GetMapping("/all")
     public List<User> findAll() {
         return userService.getAll();
     }
 
+    @GetMapping()
+    public User findOne(@AuthenticationPrincipal UserDetails userDetails) {
+        return userService.getUser(userService.findByUsername(userDetails.getUsername()).getUserId());
+    }
+
     @GetMapping("/{id}")
-    public User findOne(@PathVariable Long id) {
+    public User findOneById(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @PostMapping
     public User postUser(@RequestBody User saveUser) {
         return userService.postUser(saveUser);
+    }
+
+    @PutMapping("/putOwn/{id}")
+    public User putOwnUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.putUser(id, user);
     }
 
     @PutMapping("/{id}")

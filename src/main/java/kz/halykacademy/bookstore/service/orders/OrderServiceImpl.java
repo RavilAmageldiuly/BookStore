@@ -34,8 +34,13 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<Order> getAll() {
+    public List<Order> findAll() {
         return orderRepository.findAll().stream().map(OrderEntity::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> getAll(String username) {
+        return orderRepository.findOrderEntitiesByUser_Username(username).stream().map(OrderEntity::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -44,7 +49,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order postOrder(SaveOrder saveOrder) {
+    public Order postOrder(Long userId, SaveOrder saveOrder) {
 
         if (!userRepository.existsById(saveOrder.getUserId()))
             throw new ResourceNotFoundException("User not found! Invalid id supplied");
@@ -55,8 +60,8 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.save(
                 new OrderEntity(
                         saveOrder.getOrderId(),
-                        userRepository.getReferenceById(saveOrder.getUserId()),
-                        saveOrder.getOrderStatus(),
+                        userRepository.getReferenceById(userId),
+                        "created",
                         LocalDateTime.now(),
                         checkBooks(saveOrder)
                 )
@@ -64,15 +69,21 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order putOrder(Long id, SaveOrder saveOrder) {
+    public Order putOrder(Long orderId, SaveOrder saveOrder) {
 
-        OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
+        // передавать сюда кто делает запрос через @AuthenticationPrincipal
 
-        switch (userRepository.getReferenceById(saveOrder.getUserId()).getUserRole()) {
+        OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
+
+        String userRole = userRepository.getReferenceById(saveOrder.getUserId()).getUserRole();
+//        if (!userRole.equals("ADMIN") && order.getUser().getUserId() != userId)
+//            throw new RuntimeException("An attempt to use a resource that the user does not own!");
+
+        switch (userRole) {
             case "USER":
                 return orderRepository.save(
                         new OrderEntity(
-                                id,
+                                orderId,
                                 order.getUser(),
                                 order.getOrderStatus(),
                                 order.getOrderTime(),
@@ -80,9 +91,13 @@ public class OrderServiceImpl implements OrderService{
                         )
                 ).toDto();
             case "ADMIN":
+
+                // добавить проверку на хозяина заказа, если это админ то может менять состав своего заказа, но если
+                // заказ чужой то может менять только его статус
+
                 return orderRepository.save(
                         new OrderEntity(
-                                id,
+                                orderId,
                                 order.getUser(),
                                 saveOrder.getOrderStatus(),
                                 order.getOrderTime(),

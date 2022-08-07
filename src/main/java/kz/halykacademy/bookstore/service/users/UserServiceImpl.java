@@ -4,20 +4,29 @@ import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.dao.users.UserRepository;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.users.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public List<User> getAll() {
@@ -31,13 +40,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User postUser(User saveUser) {
+
+        saveUser.setUserPassword(passwordEncoder.encode(saveUser.getUserPassword()));
+
         return userRepository.save(
                 new UserEntity(
                         saveUser.getUserId(),
                         saveUser.getUserLogin(),
                         saveUser.getUserPassword(),
-                        saveUser.getUserRole().toUpperCase(),
-                        saveUser.getBlockFlag()
+                        "USER",
+                        false
                 )
         ).toDto();
     }
@@ -47,6 +59,9 @@ public class UserServiceImpl implements UserService {
 
         if (!userRepository.existsById(id))
             throw new ResourceNotFoundException("User not found! Invalid id supplied.");
+
+        saveUser.setUserPassword(passwordEncoder.encode(saveUser.getUserPassword()));
+
 
         return userRepository.save(
                 new UserEntity(
@@ -65,5 +80,9 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User not found! Invalid id supplied.");
 
         userRepository.deleteById(id);
+    }
+
+    public UserEntity findByUsername(String username) {
+        return userRepository.findUserEntityByUsername(username);
     }
 }

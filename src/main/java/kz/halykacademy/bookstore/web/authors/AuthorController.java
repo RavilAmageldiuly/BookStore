@@ -51,7 +51,7 @@ public class AuthorController {
         authorService.deleteAuthor(id);
     }
 
-    @GetMapping("/getByFio")
+    @GetMapping("/findByFio")
     public List<Author> getAuthorsByFio(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
         return authorService.getAuthorsByFIO(firstName, lastName, patronymic);
     }
