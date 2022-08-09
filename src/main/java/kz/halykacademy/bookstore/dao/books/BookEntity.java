@@ -5,8 +5,10 @@ import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
 import kz.halykacademy.bookstore.web.books.Book;
-import kz.halykacademy.bookstore.web.genres.Genre;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,7 +21,6 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class BookEntity {
 
     @Id
@@ -37,6 +38,7 @@ public class BookEntity {
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     private List<AuthorEntity> authorList = new ArrayList<>();
+
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "publisher_id", referencedColumnName = "publisher_id")
@@ -61,6 +63,7 @@ public class BookEntity {
 
     @Column(name = "book_quantity")
     private double bookQuantity;
+
 
     public Book toDto() {
         return new Book(

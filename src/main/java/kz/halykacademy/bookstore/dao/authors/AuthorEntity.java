@@ -2,11 +2,12 @@ package kz.halykacademy.bookstore.dao.authors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kz.halykacademy.bookstore.dao.books.BookEntity;
-import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.books.Book;
-import kz.halykacademy.bookstore.web.genres.Genre;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class AuthorEntity {
 
     @Id

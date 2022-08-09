@@ -56,7 +56,7 @@ public class AuthorController {
         return authorService.getAuthorsByFIO(firstName, lastName, patronymic);
     }
 
-    @GetMapping("/findByGenre")
+    @GetMapping("/findByGenres")
     public List<Author> getAuthorsByGenre(@RequestParam(name = "values") List<String> genres) {
         return bookService.getAuthorsByGenre(genres).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
     }

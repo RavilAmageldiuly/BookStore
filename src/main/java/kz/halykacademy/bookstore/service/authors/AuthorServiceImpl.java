@@ -2,10 +2,9 @@ package kz.halykacademy.bookstore.service.authors;
 
 import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.dao.authors.AuthorRepository;
-import kz.halykacademy.bookstore.service.books.BookServiceImpl;
-import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.authors.SaveAuthor;
+import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
-
 
     private final AuthorRepository authorRepository;
 
@@ -78,6 +76,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> getAuthorsByFIO(String firstName, String lastName, String patronymic) {
-        return authorRepository.findAllByFirstNameContainingAndLastNameContainingAndPatronymicContaining(firstName, lastName, patronymic).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
+        return authorRepository.findAllByFirstNameContainingAndLastNameContainingAndPatronymicContainingIgnoreCase(firstName, lastName, patronymic).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
     }
 }

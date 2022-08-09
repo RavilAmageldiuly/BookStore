@@ -1,12 +1,8 @@
 package kz.halykacademy.bookstore.security;
 
 import kz.halykacademy.bookstore.dao.users.UserEntity;
-import kz.halykacademy.bookstore.security.jwt.JwtUser;
 import kz.halykacademy.bookstore.security.jwt.JwtUserFactory;
-import kz.halykacademy.bookstore.service.users.UserService;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,8 +27,6 @@ public class JwtUserDetailsService implements UserDetailsService {
         if (user == null)
             throw new UsernameNotFoundException("User with username: " + username + " not found!");
 
-        JwtUser jwtUser = JwtUserFactory.create(user);
-
-        return jwtUser;
+        return JwtUserFactory.create(user);
     }
 }

@@ -3,7 +3,6 @@ package kz.halykacademy.bookstore.security.config;
 
 import kz.halykacademy.bookstore.security.jwt.JwtConfigurer;
 import kz.halykacademy.bookstore.security.jwt.JwtTokenProvider;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/books/**", "/authors/**", "/publishers/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/orders", "/users").hasAnyAuthority("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/orders/**").hasAnyAuthority("USER", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/orders/putOwn/{id}", "/users/putOwn/{id}").hasAnyAuthority("USER", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/orders/putOwn/{id}", "/users/putOwn/**").hasAnyAuthority("USER", "ADMIN")
                 .antMatchers("/books/**", "/authors/**", "/publishers/**", "/genres/**", "/orders/**", "/users/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()

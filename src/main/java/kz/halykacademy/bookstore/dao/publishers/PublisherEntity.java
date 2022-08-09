@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class PublisherEntity {
 
     @Id

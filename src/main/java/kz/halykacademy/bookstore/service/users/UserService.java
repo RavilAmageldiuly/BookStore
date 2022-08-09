@@ -12,7 +12,11 @@ public interface UserService {
 
     User postUser(User saveUser);
 
-    User putUser(Long id, User saveUser);
+    User changePassword(String username, String userPassword);
+
+    User changeUsername(String oldUsername, String newUsername);
+
+    User changeUser(Long userId, User saveUser);
 
     void deleteUser(Long id);
 }

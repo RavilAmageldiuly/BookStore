@@ -1,10 +1,8 @@
 package kz.halykacademy.bookstore.dao.authors;
 
-import kz.halykacademy.bookstore.web.authors.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +15,5 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
 
 
     // временное решение
-    // make case-insensitive
-    List<AuthorEntity> findAllByFirstNameContainingAndLastNameContainingAndPatronymicContaining(String firstName, String lastName, String patronymic);
+    List<AuthorEntity> findAllByFirstNameContainingAndLastNameContainingAndPatronymicContainingIgnoreCase(String firstName, String lastName, String patronymic);
 }

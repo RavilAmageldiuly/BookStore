@@ -2,7 +2,6 @@ package kz.halykacademy.bookstore.web.orders;
 
 
 import kz.halykacademy.bookstore.service.orders.OrderServiceImpl;
-import kz.halykacademy.bookstore.service.users.UserServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -18,11 +16,9 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final OrderServiceImpl orderService;
-    private final UserServiceImpl userService;
 
-    public OrderController(OrderServiceImpl orderService, UserServiceImpl userService) {
+    public OrderController(OrderServiceImpl orderService) {
         this.orderService = orderService;
-        this.userService = userService;
     }
 
     @GetMapping
@@ -46,17 +42,17 @@ public class OrderController {
 
     @PostMapping
     public Order postOrder(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SaveOrder saveOrder) {
-        return orderService.postOrder(userService.findByUsername(userDetails.getUsername()).getUserId(), saveOrder);
+        return orderService.postOrder(userDetails.getUsername(), saveOrder);
     }
 
     @PutMapping("/putOwn/{id}")
-    public Order putOwnOrder(@PathVariable Long id, @RequestBody SaveOrder saveOrder) {
-        return orderService.putOrder(id, saveOrder);
+    public Order putOwnOrder(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, @RequestBody SaveOrder saveOrder) {
+        return orderService.putOrder(userDetails.getUsername(), id, saveOrder);
     }
 
     @PutMapping("/{id}")
-    public Order putOrder(@PathVariable Long id, @RequestBody SaveOrder saveOrder) {
-        return orderService.putOrder(id, saveOrder);
+    public Order putOrder(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, @RequestBody SaveOrder saveOrder) {
+        return orderService.putOrder(userDetails.getUsername(), id, saveOrder);
     }
 
     @DeleteMapping("/{id}")

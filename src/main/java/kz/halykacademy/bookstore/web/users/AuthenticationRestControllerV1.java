@@ -3,9 +3,7 @@ package kz.halykacademy.bookstore.web.users;
 
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.security.jwt.JwtTokenProvider;
-import kz.halykacademy.bookstore.service.users.UserService;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +42,13 @@ public class AuthenticationRestControllerV1 {
         try {
             String username  = requestDto.getUsername();
 
-//            System.out.println(username + " ; " + requestDto.getPassword());
+            /**
+             *
+             *
+             *              Handle blocked User! from error 500 -> error 403
+             *
+             *
+             * */
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
 
@@ -52,8 +56,6 @@ public class AuthenticationRestControllerV1 {
 
             if (user == null )
                 throw new UsernameNotFoundException("User with username: " + username + " not found!");
-
-//            System.out.println(username + " : " + user.getUserRole());
 
             String token = jwtTokenProvider.createToken(username, user.getUserRole());
 

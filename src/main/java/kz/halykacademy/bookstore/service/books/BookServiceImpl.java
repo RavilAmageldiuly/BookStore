@@ -7,15 +7,14 @@ import kz.halykacademy.bookstore.dao.books.BookRepository;
 import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.dao.genres.GenreRepository;
 import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
-import kz.halykacademy.bookstore.web.authors.Author;
-import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.books.Book;
 import kz.halykacademy.bookstore.web.books.SaveBook;
-import kz.halykacademy.bookstore.web.genres.Genre;
+import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +23,11 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-
-    // instead of other repo use their services
     private final PublisherRepository publisherRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
 
-    //===============
+
 
     public BookServiceImpl(BookRepository bookRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
         this.bookRepository = bookRepository;
@@ -58,11 +55,11 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public Book putBook(long id, SaveBook saveBook) {
-        if (!bookRepository.existsById(id)) {
+        if (!bookRepository.existsById(id))
             throw new ResourceNotFoundException("Book not found. Invalid id supplied!");
-        } else if (!publisherRepository.existsById(saveBook.getPublisherId())) {
+
+        if (!publisherRepository.existsById(saveBook.getPublisherId()))
             throw new ResourceNotFoundException("Invalid publisher id supplied!");
-        }
 
         checkAuthorAndGenreIds(saveBook);
 
@@ -117,7 +114,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getBooksByTitle(String title) {
-        return bookRepository.getBooksByTitle(title).stream().map(BookEntity::toDto).collect(Collectors.toList());
+        return bookRepository.getBookEntitiesByTitleContainingIgnoreCase(title).stream().map(BookEntity::toDto).collect(Collectors.toList());
     }
 
     public List<AuthorEntity> getAllAuthors(SaveBook saveBook) {
@@ -148,7 +145,7 @@ public class BookServiceImpl implements BookService {
     public List<Book> getBooksByGenre(List<String> genres) {
         List<Book> booksByGenre = new ArrayList<>();
         for (BookEntity book: bookRepository.findAll()) {
-            if (book.getGenre().containsAll(genres)) {      // Idea предлагает заменить на хашсет, в конце оптимизировать
+            if (new HashSet<>(book.getGenre()).containsAll(genres)) {
                 booksByGenre.add(book.toDto());
             }
         }
@@ -158,7 +155,7 @@ public class BookServiceImpl implements BookService {
     public List<AuthorEntity> getAuthorsByGenre(List<String> genres) {
         List<AuthorEntity> authorsByGenre = new ArrayList<>();
         for (BookEntity book: bookRepository.findAll()) {
-            if (book.getGenre().containsAll(genres)) {          // Idea предлагает заменить на хашсет, в конце оптимизировать
+            if (new HashSet<>(book.getGenre()).containsAll(genres)) {
                 authorsByGenre.addAll(book.getAuthorList());
             }
         }

@@ -4,7 +4,9 @@ import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.dao.books.BookRepository;
 import kz.halykacademy.bookstore.dao.orders.OrderEntity;
 import kz.halykacademy.bookstore.dao.orders.OrderRepository;
-import kz.halykacademy.bookstore.dao.users.UserRepository;
+import kz.halykacademy.bookstore.dao.users.UserEntity;
+import kz.halykacademy.bookstore.service.users.UserServiceImpl;
+import kz.halykacademy.bookstore.web.exceptionHandling.AttemptToUseAlienResource;
 import kz.halykacademy.bookstore.web.exceptionHandling.BlockedUserException;
 import kz.halykacademy.bookstore.web.exceptionHandling.PriceExceedsLimitException;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
@@ -19,17 +21,15 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-
-    // replace to their services
-    private final UserRepository userRepository;
+    private final UserServiceImpl userService;
     private final BookRepository bookRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, BookRepository bookRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserServiceImpl userService, BookRepository bookRepository) {
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.bookRepository = bookRepository;
     }
 
@@ -49,51 +49,54 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order postOrder(Long userId, SaveOrder saveOrder) {
+    public Order postOrder(String username, SaveOrder saveOrder) {
 
-        if (!userRepository.existsById(saveOrder.getUserId()))
-            throw new ResourceNotFoundException("User not found! Invalid id supplied");
+        UserEntity user = userService.findByUsername(username);
 
-        if (userRepository.getReferenceById(saveOrder.getUserId()).getBlockFlag())
+        if (user.getBlockFlag())
             throw new BlockedUserException("User blocked. Order can't be placed");
 
         return orderRepository.save(
                 new OrderEntity(
                         saveOrder.getOrderId(),
-                        userRepository.getReferenceById(userId),
+                        user,
                         "created",
                         LocalDateTime.now(),
                         checkBooks(saveOrder)
                 )
         ).toDto();
+
     }
 
     @Override
-    public Order putOrder(Long orderId, SaveOrder saveOrder) {
-
-        // передавать сюда кто делает запрос через @AuthenticationPrincipal
+    public Order putOrder(String username, Long orderId, SaveOrder saveOrder) {
 
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
+        UserEntity user = userService.findByUsername(username);
+        UserEntity owner = order.getUser();
+        String userRole = user.getUserRole();
 
-        String userRole = userRepository.getReferenceById(saveOrder.getUserId()).getUserRole();
-//        if (!userRole.equals("ADMIN") && order.getUser().getUserId() != userId)
-//            throw new RuntimeException("An attempt to use a resource that the user does not own!");
+        if (!owner.equals(user) && !userRole.equals("ADMIN"))
+            throw new AttemptToUseAlienResource("Order does not belong to the current user!");
+
+        List<BookEntity> booksList = checkBooks(saveOrder);
 
         switch (userRole) {
             case "USER":
                 return orderRepository.save(
                         new OrderEntity(
-                                orderId,
-                                order.getUser(),
+                                order.getOrderId(),
+                                owner,
                                 order.getOrderStatus(),
                                 order.getOrderTime(),
-                                checkBooks(saveOrder)
+                                booksList
                         )
                 ).toDto();
+
             case "ADMIN":
 
-                // добавить проверку на хозяина заказа, если это админ то может менять состав своего заказа, но если
-                // заказ чужой то может менять только его статус
+                if (!owner.equals(user))
+                    booksList = order.getOrderedBookEntities();
 
                 return orderRepository.save(
                         new OrderEntity(
@@ -101,10 +104,11 @@ public class OrderServiceImpl implements OrderService{
                                 order.getUser(),
                                 saveOrder.getOrderStatus(),
                                 order.getOrderTime(),
-                                checkBooks(saveOrder)
+                                booksList
                         )
                 ).toDto();
-            default :
+
+            default:
                 return null;
         }
     }
@@ -120,11 +124,11 @@ public class OrderServiceImpl implements OrderService{
 
     public List<BookEntity> checkBooks(SaveOrder saveOrder) {
 
-        // добавить проверку по количеству книг
+//         добавить проверку по количеству книг
 
         List<BookEntity> orderedBooks = new ArrayList<>();
 
-        for (Long id: saveOrder.getOrderedBooks()) {
+        for (Long id : saveOrder.getOrderedBooks()) {
             orderedBooks.add(bookRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Book not found! Book with id: " + id + " does not exist")
             ));

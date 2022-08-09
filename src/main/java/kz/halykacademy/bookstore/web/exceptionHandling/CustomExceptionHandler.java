@@ -28,6 +28,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = PriceExceedsLimitException.class)
     protected ResponseEntity<Object> handlePriceExceedsLimitException(PriceExceedsLimitException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(value = AttemptToUseAlienResource.class)
+    protected ResponseEntity<Object> handleAttemptToUseAlienResourceException(AttemptToUseAlienResource exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
 }

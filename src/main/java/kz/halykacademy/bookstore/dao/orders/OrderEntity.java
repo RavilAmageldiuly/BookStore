@@ -5,7 +5,6 @@ import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.web.books.Book;
 import kz.halykacademy.bookstore.web.orders.Order;
-import kz.halykacademy.bookstore.web.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +47,7 @@ public class OrderEntity {
     )
     private List<BookEntity> orderedBooks = new ArrayList<>();
 
+
     public Order toDto() {
         return new Order(
                 this.orderId,
@@ -55,16 +55,20 @@ public class OrderEntity {
                 this.orderStatus,
                 this.orderTime,
                 getPrice(),
-                getBooks(),
+                getOrderedBooks(),
                 null
         );
     }
 
-    private List<Book> getBooks() {
+    private List<Book> getOrderedBooks() {
         return orderedBooks.stream().map(BookEntity::toDto).collect(Collectors.toList());
     }
 
     public double getPrice() {
         return orderedBooks.stream().mapToDouble(BookEntity::getPrice).sum();
+    }
+
+    public List<BookEntity> getOrderedBookEntities() {
+        return orderedBooks;
     }
 }

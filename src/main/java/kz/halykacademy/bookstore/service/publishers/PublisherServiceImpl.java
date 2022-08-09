@@ -65,7 +65,6 @@ public class PublisherServiceImpl implements PublisherService{
 
     @Override
     public List<Publisher> getPublishersByName(String name) {
-        List<PublisherEntity> publishers = publisherRepository.getPublishersByName(name);
-        return publishers.stream().map(PublisherEntity::toDto).collect(Collectors.toList());
+        return publisherRepository.getPublisherEntitiesByNameContainingIgnoreCase(name).stream().map(PublisherEntity::toDto).collect(Collectors.toList());
     }
 }

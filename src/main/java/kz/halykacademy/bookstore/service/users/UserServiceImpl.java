@@ -5,16 +5,9 @@ import kz.halykacademy.bookstore.dao.users.UserRepository;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.users.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,21 +47,31 @@ public class UserServiceImpl implements UserService {
         ).toDto();
     }
 
-    @Override
-    public User putUser(Long id, User saveUser) {
 
-        if (!userRepository.existsById(id))
+    @Override
+    public User changePassword(String username, String password) {
+        return userRepository.updateUserPassword(username, password).toDto();
+    }
+
+    @Override
+    public User changeUsername(String oldUsername, String newUsername) {
+        return userRepository.updateUsername(oldUsername, newUsername).toDto();
+    }
+
+    @Override
+    public User changeUser(Long userId, User saveUser) {
+
+        if (!userRepository.existsById(userId))
             throw new ResourceNotFoundException("User not found! Invalid id supplied.");
 
-        saveUser.setUserPassword(passwordEncoder.encode(saveUser.getUserPassword()));
-
+        UserEntity user = userRepository.getReferenceById(userId);
 
         return userRepository.save(
                 new UserEntity(
-                        id,
-                        saveUser.getUserLogin(),
-                        saveUser.getUserPassword(),
-                        saveUser.getUserRole().toUpperCase(),
+                        user.getUserId(),
+                        user.getUsername(),
+                        user.getUserPassword(),
+                        saveUser.getUserRole(),
                         saveUser.getBlockFlag()
                 )
         ).toDto();

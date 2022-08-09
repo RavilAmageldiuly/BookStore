@@ -38,14 +38,19 @@ public class UserController {
         return userService.postUser(saveUser);
     }
 
-    @PutMapping("/putOwn/{id}")
-    public User putOwnUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.putUser(id, user);
+    @PutMapping("/putOwn/updateUsername")
+    public User changeUsername(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "username") String username) {
+        return userService.changeUsername(userDetails.getUsername(), username);
+    }
+
+    @PutMapping("/putOwn/updatePassword")
+    public User changePassword(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "password") String password) {
+        return userService.changePassword(userDetails.getUsername(), password);
     }
 
     @PutMapping("/{id}")
     public User putUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.putUser(id, user);
+        return userService.changeUser(id, user);
     }
 
     @DeleteMapping("/{id}")

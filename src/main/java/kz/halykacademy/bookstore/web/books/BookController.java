@@ -52,7 +52,7 @@ public class BookController {
         return bookService.getBooksByTitle(title);
     }
 
-    @GetMapping("/findByGenre")
+    @GetMapping("/findByGenres")
     public List<Book> getBooksByGenre(@RequestParam(value = "values") List<String> genres) {
         return bookService.getBooksByGenre(genres);
     }

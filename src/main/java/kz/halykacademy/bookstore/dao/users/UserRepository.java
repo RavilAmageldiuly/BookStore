@@ -1,8 +1,18 @@
 package kz.halykacademy.bookstore.dao.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findUserEntityByUsername(String username);
+
+    @Modifying
+    @Query("update UserEntity u set u.userPassword = ?2 where u.username = ?1")
+    UserEntity updateUserPassword(String username, String password);
+
+    @Modifying
+    @Query("update UserEntity u set u.username = ?2 where u.username = ?1")
+    UserEntity updateUsername(String oldUsername, String newUsername);
 }
