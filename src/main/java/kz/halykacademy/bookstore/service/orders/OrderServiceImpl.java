@@ -2,16 +2,15 @@ package kz.halykacademy.bookstore.service.orders;
 
 import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.dao.books.BookRepository;
+import kz.halykacademy.bookstore.dao.orderBook.OrderBook;
 import kz.halykacademy.bookstore.dao.orders.OrderEntity;
 import kz.halykacademy.bookstore.dao.orders.OrderRepository;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
-import kz.halykacademy.bookstore.web.exceptionHandling.AttemptToUseAlienResource;
-import kz.halykacademy.bookstore.web.exceptionHandling.BlockedUserException;
-import kz.halykacademy.bookstore.web.exceptionHandling.PriceExceedsLimitException;
-import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
+import kz.halykacademy.bookstore.web.exceptionHandling.*;
 import kz.halykacademy.bookstore.web.orders.Order;
 import kz.halykacademy.bookstore.web.orders.SaveOrder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,25 +20,20 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final UserServiceImpl userService;
     private final BookRepository bookRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserServiceImpl userService, BookRepository bookRepository) {
-        this.orderRepository = orderRepository;
-        this.userService = userService;
-        this.bookRepository = bookRepository;
-    }
-
     @Override
-    public List<Order> findAll() {
+    public List<Order> getAll() {
         return orderRepository.findAll().stream().map(OrderEntity::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Order> getAll(String username) {
+    public List<Order> getAllForSpecificUser(String username) {
         return orderRepository.findOrderEntitiesByUser_Username(username).stream().map(OrderEntity::toDto).collect(Collectors.toList());
     }
 
@@ -53,23 +47,29 @@ public class OrderServiceImpl implements OrderService {
 
         UserEntity user = userService.findByUsername(username);
 
-        if (user.getBlockFlag())
-            throw new BlockedUserException("User blocked. Order can't be placed");
-
-        return orderRepository.save(
+        OrderEntity order = orderRepository.save(
                 new OrderEntity(
-                        saveOrder.getOrderId(),
+                        null,
                         user,
                         "created",
                         LocalDateTime.now(),
-                        checkBooks(saveOrder)
-                )
-        ).toDto();
+                        new ArrayList<>()
+                ));
+
+        order.setOrderedBooks(getOrderBooks(order, saveOrder));
+
+        return orderRepository.save(order).toDto();
 
     }
 
     @Override
     public Order putOrder(String username, Long orderId, SaveOrder saveOrder) {
+
+        /**
+         *
+         *      CHANGED BOOKS MUST RETURN TO THEIR PLACE (QUANTITY)
+         *
+         * */
 
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
         UserEntity user = userService.findByUsername(username);
@@ -79,54 +79,44 @@ public class OrderServiceImpl implements OrderService {
         if (!owner.equals(user) && !userRole.equals("ADMIN"))
             throw new AttemptToUseAlienResource("Order does not belong to the current user!");
 
-        List<BookEntity> booksList = checkBooks(saveOrder);
+        List<OrderBook> booksList = getOrderBooks(order, saveOrder);
 
         switch (userRole) {
             case "USER":
-                return orderRepository.save(
-                        new OrderEntity(
-                                order.getOrderId(),
-                                owner,
-                                order.getOrderStatus(),
-                                order.getOrderTime(),
-                                booksList
-                        )
-                ).toDto();
+                order.setOrderedBooks(booksList);
 
             case "ADMIN":
-
                 if (!owner.equals(user))
-                    booksList = order.getOrderedBookEntities();
+                    booksList = order.getOrderedBooks();
 
-                return orderRepository.save(
-                        new OrderEntity(
-                                orderId,
-                                order.getUser(),
-                                saveOrder.getOrderStatus(),
-                                order.getOrderTime(),
-                                booksList
-                        )
-                ).toDto();
-
-            default:
-                return null;
+                order.setOrderedBooks(booksList);
+                order.setOrderStatus(saveOrder.getOrderStatus());
         }
+
+        return orderRepository.save(order).toDto();
     }
 
     @Override
     public void deleteOrder(Long id) {
+
         if (!orderRepository.existsById(id))
             throw new ResourceNotFoundException("Order not found! Invalid id supplied");
 
-        orderRepository.deleteById(id);
+        /**
+         *
+         *      change the order status to cancel, return ordered books to their places
+         *
+         * */
     }
 
+    public List<OrderBook> getOrderBooks(OrderEntity orderEntity, SaveOrder saveOrder) {
 
-    public List<BookEntity> checkBooks(SaveOrder saveOrder) {
-
-//         добавить проверку по количеству книг
+        List<OrderBook> orderBookList = new ArrayList<>();
 
         List<BookEntity> orderedBooks = new ArrayList<>();
+
+        List<Long> bookAmount = saveOrder.getBookAmount();
+
 
         for (Long id : saveOrder.getOrderedBooks()) {
             orderedBooks.add(bookRepository.findById(id).orElseThrow(
@@ -134,9 +124,34 @@ public class OrderServiceImpl implements OrderService {
             ));
         }
 
-        if (orderedBooks.stream().mapToDouble(BookEntity::getPrice).sum() > 10000)
-            throw new PriceExceedsLimitException("Total price of order should be less than 10000т.");
+        int total = 0;
 
-        return orderedBooks;
+        for (int i = 0; i < saveOrder.getOrderedBooks().size(); i++) {
+            total += orderedBooks.get(i).getPrice() * bookAmount.get(i);
+            if (total > 10000) {
+                throw new PriceExceedsLimitException("Total price of order should be less than 10000₸.");
+            }
+        }
+
+        int count = 0;
+
+        for (BookEntity book : orderedBooks) {
+            OrderBook orderBook = new OrderBook();
+            orderBook.setOrder(orderEntity);
+            orderBook.setBook(book);
+            orderBook.setOrdered_book_amount(bookAmount.get(count));
+
+            double checkBookAmount = book.getBookQuantity() - bookAmount.get(count);
+
+            if (checkBookAmount < 0) {
+                throw new NotEnoughBookException("Not enough books!");
+            }
+
+            book.setBookQuantity(checkBookAmount);
+            orderBookList.add(orderBook);
+            count++;
+        }
+
+        return orderBookList;
     }
 }

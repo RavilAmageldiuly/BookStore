@@ -1,6 +1,7 @@
 package kz.halykacademy.bookstore.dao.books;
 
 
+import kz.halykacademy.bookstore.dao.orderBook.OrderBook;
 import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
@@ -64,6 +65,10 @@ public class BookEntity {
     @Column(name = "book_quantity")
     private double bookQuantity;
 
+    @Transient
+    @OneToMany(mappedBy = "book", cascade = CascadeType.MERGE)
+    private List<OrderBook> booksInOrder = new ArrayList<>();
+
 
     public Book toDto() {
         return new Book(
@@ -89,6 +94,10 @@ public class BookEntity {
         return genreList.stream()
                 .map(GenreEntity::getGenreName)
                 .collect(Collectors.toList());
+    }
+
+    public List<AuthorEntity> getAuthorList() {
+        return authorList;
     }
 
 }

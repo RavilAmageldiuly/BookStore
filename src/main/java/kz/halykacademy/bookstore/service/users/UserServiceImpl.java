@@ -61,17 +61,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User changeUser(Long userId, User saveUser) {
 
-        if (!userRepository.existsById(userId))
-            throw new ResourceNotFoundException("User not found! Invalid id supplied.");
-
-        UserEntity user = userRepository.getReferenceById(userId);
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found! Invalid id supplied."));
 
         return userRepository.save(
                 new UserEntity(
                         user.getUserId(),
                         user.getUsername(),
                         user.getUserPassword(),
-                        saveUser.getUserRole(),
+                        saveUser.getUserRole().toUpperCase(),
                         saveUser.getBlockFlag()
                 )
         ).toDto();

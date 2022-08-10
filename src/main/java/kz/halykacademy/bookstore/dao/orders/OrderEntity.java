@@ -1,6 +1,7 @@
 package kz.halykacademy.bookstore.dao.orders;
 
 
+import kz.halykacademy.bookstore.dao.orderBook.OrderBook;
 import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.web.books.Book;
@@ -39,13 +40,8 @@ public class OrderEntity {
     @Column(name = "order_time")
     private LocalDateTime orderTime;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_book",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<BookEntity> orderedBooks = new ArrayList<>();
+    @OneToMany(mappedBy =  "order", cascade = CascadeType.MERGE)
+    private List<OrderBook> orderedBooks = new ArrayList<>();
 
 
     public Order toDto() {
@@ -55,20 +51,32 @@ public class OrderEntity {
                 this.orderStatus,
                 this.orderTime,
                 getPrice(),
-                getOrderedBooks(),
-                null
+                getOrderedBookDTOs(),
+                getOrderedBookAmount()
         );
     }
 
-    private List<Book> getOrderedBooks() {
-        return orderedBooks.stream().map(BookEntity::toDto).collect(Collectors.toList());
+    public List<Long> getOrderedBookAmount() {
+        return orderedBooks.stream().map(OrderBook::getOrdered_book_amount).collect(Collectors.toList());
+    }
+
+    public List<OrderBook> getOrderedBooks() {
+        return orderedBooks;
+    }
+
+    public List<Book> getOrderedBookDTOs() {
+        return orderedBooks.stream().map(OrderBook::getBook).map(BookEntity::toDto).collect(Collectors.toList());
     }
 
     public double getPrice() {
-        return orderedBooks.stream().mapToDouble(BookEntity::getPrice).sum();
+
+        int total = 0;
+
+        for (int i = 0; i < getOrderedBookAmount().size(); i++) {
+            total += getOrderedBookAmount().get(i) * orderedBooks.get(i).getBook().getPrice();
+        }
+
+        return total;
     }
 
-    public List<BookEntity> getOrderedBookEntities() {
-        return orderedBooks;
-    }
 }

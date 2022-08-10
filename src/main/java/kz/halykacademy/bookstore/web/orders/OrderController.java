@@ -24,14 +24,14 @@ public class OrderController {
     @GetMapping
     public Page<Order> findAllForSpecificUser(@AuthenticationPrincipal UserDetails userDetails, Pageable pageRequest) {
         return new PageImpl(
-                orderService.getAll(userDetails.getUsername()).stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+                orderService.getAllForSpecificUser(userDetails.getUsername()).stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
         );
     }
 
     @GetMapping("/findAll")
     public Page<Order> findAll(Pageable pageRequest) {
         return new PageImpl(
-                orderService.findAll().stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+                orderService.getAll().stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
         );
     }
 

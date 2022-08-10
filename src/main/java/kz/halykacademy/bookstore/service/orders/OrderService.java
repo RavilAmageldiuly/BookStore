@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<Order> findAll();
+    List<Order> getAll();
 
-    List<Order> getAll(String username);
+    List<Order> getAllForSpecificUser(String username);
 
     Order getOne(Long id);
 

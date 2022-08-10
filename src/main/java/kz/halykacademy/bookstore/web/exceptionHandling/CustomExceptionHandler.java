@@ -35,4 +35,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleAttemptToUseAlienResourceException(AttemptToUseAlienResource exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
+
+    @ExceptionHandler(value = NotEnoughBookException.class)
+    protected ResponseEntity<Object> handleNotEnoughBookException(NotEnoughBookException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
+    }
 }

@@ -28,7 +28,6 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
 
-
     public BookServiceImpl(BookRepository bookRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
@@ -58,22 +57,19 @@ public class BookServiceImpl implements BookService {
         if (!bookRepository.existsById(id))
             throw new ResourceNotFoundException("Book not found. Invalid id supplied!");
 
-        if (!publisherRepository.existsById(saveBook.getPublisherId()))
-            throw new ResourceNotFoundException("Invalid publisher id supplied!");
-
-        checkAuthorAndGenreIds(saveBook);
-
         return bookRepository.save(
                 new BookEntity(
                         id,
                         saveBook.getPrice(),
-                        getAllAuthors(saveBook),
-                        publisherRepository.getReferenceById(saveBook.getPublisherId()),
+                        checkAndGetAuthors(saveBook),
+                        publisherRepository.findById(saveBook.getPublisherId()).orElseThrow(() ->
+                                new ResourceNotFoundException("Invalid publisher id supplied!")),
                         saveBook.getTitle(),
                         saveBook.getNumberOfPages(),
                         saveBook.getReleaseYear(),
-                        getAllGenres(saveBook),
-                        saveBook.getBookQuantity()
+                        checkAndGetGenres(saveBook),
+                        saveBook.getBookQuantity(),
+                        null
                 )
         ).toDto();
     }
@@ -82,23 +78,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book postBook(SaveBook saveBook) {
 
-        if (!publisherRepository.existsById(saveBook.getPublisherId())) {
-            throw new ResourceNotFoundException("Invalid publisher id supplied!");
-        }
-
-        checkAuthorAndGenreIds(saveBook);
-
         return bookRepository.save(
                 new BookEntity(
                         saveBook.getId(),
                         saveBook.getPrice(),
-                        getAllAuthors(saveBook),
-                        publisherRepository.getReferenceById(saveBook.getPublisherId()),
+                        checkAndGetAuthors(saveBook),
+                        publisherRepository.findById(saveBook.getPublisherId()).orElseThrow(() ->
+                                new ResourceNotFoundException("Invalid publisher id supplied!")),
                         saveBook.getTitle(),
                         saveBook.getNumberOfPages(),
                         saveBook.getReleaseYear(),
-                        getAllGenres(saveBook),
-                        saveBook.getBookQuantity()
+                        checkAndGetGenres(saveBook),
+                        saveBook.getBookQuantity(),
+                        null
                 )
         ).toDto();
     }
@@ -117,34 +109,28 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getBookEntitiesByTitleContainingIgnoreCase(title).stream().map(BookEntity::toDto).collect(Collectors.toList());
     }
 
-    public List<AuthorEntity> getAllAuthors(SaveBook saveBook) {
-        return saveBook.getAuthorList().stream().map(authorRepository::getReferenceById).collect(Collectors.toList());
-    }
-
-    public List<GenreEntity> getAllGenres(SaveBook saveBook) {
-        return saveBook.getGenreList().stream().map(genreRepository::getReferenceById).collect(Collectors.toList());
-    }
-
-    public void checkAuthorAndGenreIds(SaveBook saveBook) {
-
+    public List<AuthorEntity> checkAndGetAuthors(SaveBook saveBook) {
+        List<AuthorEntity> authors = new ArrayList<>();
         for (Long authorId : saveBook.getAuthorList()) {
-            if (!authorRepository.existsById(authorId)) {
-                throw new ResourceNotFoundException("Invalid author id supplied! Author with id: " + authorId +
-                        " does not exists");
-            }
+            authors.add(authorRepository.findById(authorId).orElseThrow(() ->
+                    new ResourceNotFoundException("Invalid author id supplied! Author with id: " + authorId +
+                    " does not exists")));
         }
+        return authors;
+    }
 
+    public List<GenreEntity> checkAndGetGenres(SaveBook saveBook) {
+        List<GenreEntity> genres = new ArrayList<>();
         for (Long genreId: saveBook.getGenreList()) {
-            if (!genreRepository.existsById(genreId)) {
-                throw new ResourceNotFoundException("Invalid genre id supplied! Genre with id: " + genreId +
-                        " does not exists");
-            }
+            genres.add(genreRepository.findById(genreId).orElseThrow(() -> new ResourceNotFoundException("Invalid genre id supplied! Genre with id: " + genreId +
+                    " does not exists")));
         }
+        return genres;
     }
 
     public List<Book> getBooksByGenre(List<String> genres) {
         List<Book> booksByGenre = new ArrayList<>();
-        for (BookEntity book: bookRepository.findAll()) {
+        for (BookEntity book : bookRepository.findAll()) {
             if (new HashSet<>(book.getGenre()).containsAll(genres)) {
                 booksByGenre.add(book.toDto());
             }
@@ -154,7 +140,7 @@ public class BookServiceImpl implements BookService {
 
     public List<AuthorEntity> getAuthorsByGenre(List<String> genres) {
         List<AuthorEntity> authorsByGenre = new ArrayList<>();
-        for (BookEntity book: bookRepository.findAll()) {
+        for (BookEntity book : bookRepository.findAll()) {
             if (new HashSet<>(book.getGenre()).containsAll(genres)) {
                 authorsByGenre.addAll(book.getAuthorList());
             }
