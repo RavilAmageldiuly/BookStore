@@ -24,7 +24,7 @@ public class OrderBook {
     private BookEntity book;
 
     @Column(name = "ordered_book_amount")
-    private Long ordered_book_amount;
+    private Integer ordered_book_amount;
 
     public OrderEntity getOrder() {
         return order;
@@ -42,11 +42,11 @@ public class OrderBook {
         this.book = book;
     }
 
-    public Long getOrdered_book_amount() {
+    public Integer getOrdered_book_amount() {
         return ordered_book_amount;
     }
 
-    public void setOrdered_book_amount(Long ordered_book_amount) {
+    public void setOrdered_book_amount(Integer ordered_book_amount) {
         this.ordered_book_amount = ordered_book_amount;
     }
 }

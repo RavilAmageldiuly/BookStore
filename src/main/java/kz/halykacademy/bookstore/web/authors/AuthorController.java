@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -57,7 +58,7 @@ public class AuthorController {
     }
 
     @GetMapping("/findByGenres")
-    public List<Author> getAuthorsByGenre(@RequestParam(name = "values") List<String> genres) {
-        return bookService.getAuthorsByGenre(genres).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
+    public Set<Author> getAuthorsByGenre(@RequestParam(name = "values") List<String> genres) {
+        return bookService.getAuthorsByGenre(genres).stream().map(AuthorEntity::toDto).collect(Collectors.toSet());
     }
 }

@@ -56,7 +56,7 @@ public class OrderEntity {
         );
     }
 
-    public List<Long> getOrderedBookAmount() {
+    public List<Integer> getOrderedBookAmount() {
         return orderedBooks.stream().map(OrderBook::getOrdered_book_amount).collect(Collectors.toList());
     }
 

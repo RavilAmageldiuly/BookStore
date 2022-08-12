@@ -12,6 +12,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,15 +71,15 @@ public class AuthorEntity {
         return firstName + " " + lastName;
     }
 
-    private List<String> getGenres() {
-        List<String> genreList = new ArrayList<>();
+    private HashSet<String> getGenres() {
+        HashSet<String> genreList = new HashSet<>();
         try {
             for (BookEntity book: booksList) {
                 genreList.addAll(book.getGenre());
             }
             return genreList;
         } catch (NullPointerException e) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
     }
 }

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 
 @Data
@@ -19,5 +18,5 @@ public class Order {
     private LocalDateTime orderTime;
     private double totalPrice;
     private List<Book> orderedBooks;
-    private List<Long> bookAmount;
+    private List<Integer> bookAmount;
 }

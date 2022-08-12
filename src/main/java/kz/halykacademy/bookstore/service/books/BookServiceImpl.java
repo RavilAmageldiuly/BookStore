@@ -13,9 +13,7 @@ import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -128,18 +126,57 @@ public class BookServiceImpl implements BookService {
         return genres;
     }
 
-    public List<Book> getBooksByGenre(List<String> genres) {
-        List<Book> booksByGenre = new ArrayList<>();
-        for (BookEntity book : bookRepository.findAll()) {
-            if (new HashSet<>(book.getGenre()).containsAll(genres)) {
-                booksByGenre.add(book.toDto());
+    public int overlapCount(BookEntity book, List<String> genres) {
+
+        int overlapCount = 0;
+        for (String genre: genres) {
+            if(book.getGenre().contains(genre)) {
+                overlapCount++;
             }
         }
-        return booksByGenre;
+
+        return overlapCount;
     }
 
-    public List<AuthorEntity> getAuthorsByGenre(List<String> genres) {
-        List<AuthorEntity> authorsByGenre = new ArrayList<>();
+    public List<Book> getBooksByGenre(List<String> genres) {
+        List<Book> booksByGenre;
+
+        HashMap<BookEntity, Integer> booksByGenreWithOverlap = new HashMap<>();
+
+        for (BookEntity book : bookRepository.findAll()) {
+            if (overlapCount(book, genres) > 0)
+                booksByGenreWithOverlap.put(book, overlapCount(book, genres));
+        }
+
+        booksByGenre = sortValues(booksByGenreWithOverlap).stream().map(BookEntity::toDto).collect(Collectors.toList());
+
+        Collections.reverse(booksByGenre);
+
+        return booksByGenre;
+
+    }
+
+    private List<BookEntity> sortValues(HashMap map) {
+        List list = new LinkedList(map.entrySet());
+        Collections.sort(list, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue());
+            }
+        });
+
+        List sortedList = new ArrayList<>();
+
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedList.add(entry.getKey());
+        }
+
+        return sortedList;
+    }
+
+    public HashSet<AuthorEntity> getAuthorsByGenre(List<String> genres) {
+        HashSet<AuthorEntity> authorsByGenre = new HashSet<>();
         for (BookEntity book : bookRepository.findAll()) {
             if (new HashSet<>(book.getGenre()).containsAll(genres)) {
                 authorsByGenre.addAll(book.getAuthorList());

@@ -19,5 +19,5 @@ public class SaveBook {
     private int numberOfPages;
     private int releaseYear;
     private Set<Long> genreList;
-    private double bookQuantity;
+    private int bookQuantity;
 }

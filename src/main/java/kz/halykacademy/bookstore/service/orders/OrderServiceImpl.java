@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<BookEntity> orderedBooks = new ArrayList<>();
 
-        List<Long> bookAmount = saveOrder.getBookAmount();
+        List<Integer> bookAmount = saveOrder.getBookAmount();
 
 
         for (Long id : saveOrder.getOrderedBooks()) {
@@ -141,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
             orderBook.setBook(book);
             orderBook.setOrdered_book_amount(bookAmount.get(count));
 
-            double checkBookAmount = book.getBookQuantity() - bookAmount.get(count);
+            int checkBookAmount = book.getBookQuantity() - bookAmount.get(count);
 
             if (checkBookAmount < 0) {
                 throw new NotEnoughBookException("Not enough books!");

@@ -63,7 +63,7 @@ public class BookEntity {
     private List<GenreEntity> genreList = new ArrayList<>();
 
     @Column(name = "book_quantity")
-    private double bookQuantity;
+    private int bookQuantity;
 
     @Transient
     @OneToMany(mappedBy = "book", cascade = CascadeType.MERGE)
@@ -100,4 +100,9 @@ public class BookEntity {
         return authorList;
     }
 
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

@@ -14,5 +14,5 @@ import java.util.List;
 public class SaveOrder {
     private String orderStatus;
     private HashSet<Long> orderedBooks;
-    private List<Long> bookAmount;
+    private List<Integer> bookAmount;
 }
