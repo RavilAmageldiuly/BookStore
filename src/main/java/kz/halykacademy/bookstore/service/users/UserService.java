@@ -18,5 +18,5 @@ public interface UserService {
 
     User changeUser(Long userId, User saveUser);
 
-    void deleteUser(Long id);
+    void deleteUser(String username);
 }

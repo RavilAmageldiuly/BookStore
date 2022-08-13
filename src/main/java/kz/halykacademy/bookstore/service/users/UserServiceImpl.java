@@ -75,11 +75,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id))
-            throw new ResourceNotFoundException("User not found! Invalid id supplied.");
-
-        userRepository.deleteById(id);
+    public void deleteUser(String username) {
+        userRepository.deleteById(userRepository.findUserEntityByUsername(username).getUserId());
     }
 
     public UserEntity findByUsername(String username) {

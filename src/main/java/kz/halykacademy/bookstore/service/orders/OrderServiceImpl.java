@@ -65,16 +65,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order putOrder(String username, Long orderId, SaveOrder saveOrder) {
 
-        /**
-         *
-         *      CHANGED BOOKS MUST RETURN TO THEIR PLACE (QUANTITY)
-         *
-         * */
-
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
         UserEntity user = userService.findByUsername(username);
         UserEntity owner = order.getUser();
         String userRole = user.getUserRole();
+
+        // must return (check)
+        returnBooks(order.getOrderedBooks());
 
         if (!owner.equals(user) && !userRole.equals("ADMIN"))
             throw new AttemptToUseAlienResource("Order does not belong to the current user!");
@@ -99,14 +96,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long id) {
 
-        if (!orderRepository.existsById(id))
-            throw new ResourceNotFoundException("Order not found! Invalid id supplied");
+        OrderEntity canceledOrder = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
 
-        /**
-         *
-         *      change the order status to cancel, return ordered books to their places
-         *
-         * */
+        canceledOrder.setOrderStatus("canceled");
+        canceledOrder.setOrderTime(LocalDateTime.now());
+        returnBooks(canceledOrder.getOrderedBooks());
+//        canceledOrder.setOrderedBooks(null);
+
+        orderRepository.save(canceledOrder);
     }
 
     public List<OrderBook> getOrderBooks(OrderEntity orderEntity, SaveOrder saveOrder) {
@@ -153,5 +150,15 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return orderBookList;
+    }
+
+    public void returnBooks(List<OrderBook> orderedBooks) {
+        for (OrderBook orderedBook: orderedBooks) {
+            BookEntity book = orderedBook.getBook();
+            book.setBookQuantity(
+                    book.getBookQuantity() + orderedBook.getOrdered_book_amount()
+            );
+            orderedBook.setOrdered_book_amount(0);
+        }
     }
 }

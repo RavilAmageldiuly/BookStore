@@ -649,7 +649,7 @@ paths:
         404:
           description: Genre not found. Invalid id supplied!
   /users:
-    description: User resource. Create, retrieve users from database
+    description: User resource. Create, retrieve, delete users from database
     get:
       tags:
         - users
@@ -679,6 +679,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
+    delete:
+      tags:
+        - users
+      description: Delete currently logged in user. User can delete only his/her own account
+      responses:
+        200:
+          description: Successfully deleted user
+        400:
+          description: Invalid id format!
+        404:
+          description: User not found. Invalid id supplied!
   /users/{id}:
     get:
       tags:
@@ -731,26 +742,6 @@ paths:
           description: Invalid id format!
         403:
           description: Forbidden! Only users with role ADMIN can change user role and block flag of other users
-        404:
-          description: User not found. Invalid id supplied!
-    delete:
-      tags:
-        - users
-      description: Delete a user with specific id
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 2
-      responses:
-        200:
-          description: Successfully deleted user
-        400:
-          description: Invalid id format!
-        # 403:
-        #   description: Forbidden! Only users with role ADMIN can delete users
         404:
           description: User not found. Invalid id supplied!
   /users/findAll:

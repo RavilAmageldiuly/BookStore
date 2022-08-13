@@ -82,13 +82,4 @@ public class AuthorEntity {
             return new HashSet<>();
         }
     }
-
-    @Override
-    public String toString() {
-        return "AuthorEntity{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", patronymic='" + patronymic + '\'' +
-                '}';
-    }
 }

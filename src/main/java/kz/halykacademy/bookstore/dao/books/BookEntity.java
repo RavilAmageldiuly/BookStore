@@ -99,10 +99,4 @@ public class BookEntity {
     public List<AuthorEntity> getAuthorList() {
         return authorList;
     }
-
-
-    @Override
-    public String toString() {
-        return title;
-    }
 }
