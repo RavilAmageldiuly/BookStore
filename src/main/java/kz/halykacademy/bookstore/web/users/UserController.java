@@ -2,11 +2,14 @@ package kz.halykacademy.bookstore.web.users;
 
 
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -19,8 +22,11 @@ public class UserController {
     }
 
     @GetMapping("/findAll")
-    public List<User> findAll() {
-        return userService.getAll();
+    public Page<User> findAll(Pageable pageRequest) {
+        return new PageImpl<>(
+                userService.getAll()
+                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping()

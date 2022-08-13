@@ -2,9 +2,12 @@ package kz.halykacademy.bookstore.web.genres;
 
 
 import kz.halykacademy.bookstore.service.genres.GenreService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/genres")
@@ -17,8 +20,11 @@ public class GenreController {
     }
 
     @GetMapping
-    public List<Genre> findAll() {
-        return genreService.getAll();
+    public Page<Genre> findAll(Pageable pageRequest) {
+        return new PageImpl<>(
+                genreService.getAll()
+                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{id}")

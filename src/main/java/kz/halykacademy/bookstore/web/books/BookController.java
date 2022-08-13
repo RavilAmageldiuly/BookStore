@@ -1,6 +1,7 @@
 package kz.halykacademy.bookstore.web.books;
 
 
+import kz.halykacademy.bookstore.dao.books.BookEntity;
 import kz.halykacademy.bookstore.service.books.BookServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,12 +49,17 @@ public class BookController {
     }
 
     @GetMapping("/findByTitle")
-    public List<Book> getBooksByTitle(@RequestParam(value = "title") String title) {
-        return bookService.getBooksByTitle(title);
+    public Page<Book> getBooksByTitle(Pageable pageRequest, @RequestParam(value = "title") String title) {
+        return new PageImpl<>(
+                bookService.getBooksByTitle(title).stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/findByGenres")
-    public List<Book> getBooksByGenre(@RequestParam(value = "values") List<String> genres) {
-        return bookService.getBooksByGenre(genres);
+    public Page<Book> getBooksByGenre(Pageable pageRequest, @RequestParam(value = "values") List<String> genres) {
+        return new PageImpl<>(
+                bookService.getBooksByGenre(genres).stream().map(BookEntity::toDto).collect(Collectors.toList())
+                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 }

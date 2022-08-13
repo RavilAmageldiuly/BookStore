@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -48,7 +47,10 @@ public class PublisherController {
     }
 
     @GetMapping("/findByName")
-    public List<Publisher> getAllPublishersByName(@RequestParam(value = "name") String name) {
-        return publisherService.getPublishersByName(name);
+    public Page<Publisher> getAllPublishersByName(Pageable pageRequest, @RequestParam(value = "name") String name) {
+        return new PageImpl<>(
+                publisherService.getPublishersByName(name)
+                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 }

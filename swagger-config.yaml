@@ -12,25 +12,27 @@ servers:
 
 paths:
   /books:
-    description: Book resource. Get all books, post a book
+    description: Book resource. Get all books, post a book.
     get:
       tags:
         - books
       description: Get information from book store database about all books
       parameters:
         - name: page
+          required: false
           in: query
-          description: The page which you wanna get
+          description: The page which you want to get
           schema:
             type: integer
         - name: size
+          required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
       responses:
         200:
-          description: Successfully returned array of books
+          description: Successfully returned an array of books
           content:
             application/json:
               schema:
@@ -40,7 +42,7 @@ paths:
     post:
       tags:
         - books
-      description: Add a new Book
+      description: Add a new book to the database
       requestBody:
         content:
           application/json:
@@ -48,15 +50,16 @@ paths:
               $ref: '#/components/schemas/saveBook'
       responses:
         200:
-          description: Successfully added book
+          description: Successfully added book to the database
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/book"
 
   /books/{id}:
-    description: Get, delete, update book based on id path parameter
+    description: Get, delete, update book based on path id parameter
     get:
+      description: Get information about specific book by id
       tags:
         - books
       parameters:
@@ -67,7 +70,7 @@ paths:
             type: integer
       responses:
         200:
-          description: Successfully returned Book
+          description: Successfully returned book
           content:
             application/json:
               schema:
@@ -93,11 +96,17 @@ paths:
               $ref: "#/components/schemas/saveBook"
       responses:
         200:
-          description: Successfully updated Book
+          description: Successfully updated book
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/book"
+        400:
+          description: Invalid id format!
+        403:
+          description: Forbidden! Only users with role 'ADMIN' can change information about books
+        404:
+          description: Book not found! Invalid id supplied
     delete:
       tags:
         - books
@@ -113,14 +122,28 @@ paths:
           description: Successfully deleted Book
         400:
           description: Invalid id format
+        403:
+          description: Forbidden! Only users with role 'ADMIN' can delete information about books
         404:
           description: Book not found. Invalid ID supplied!
   /books/findByTitle:
     get:
       tags:
         - books
-      description: Get book by title
+      description: Get books by title
       parameters:
+        - name: page
+          required: false
+          in: query
+          description: The page which you want to get
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: The amount of elements in one page
+          schema:
+            type: integer
         - name: title
           required: true
           in: query
@@ -136,12 +159,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/book'
+        400:
+          description: Bad request!
   /books/findByGenres:
     get:
       tags:
         - books
-      description: Get books by genres
+      description: Find and get book from database by genres
       parameters:
+        - name: page
+          required: false
+          in: query
+          description: The page which you want to get
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: The amount of elements in one page
+          schema:
+            type: integer
         - name: values
           in: query
           required: true
@@ -159,12 +196,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/book'
+        400:
+          description: Bad request!
   /authors:
     description: Author resourse. Create, get information about authors from book store database
     get:
       tags:
         - authors
-      description: Get specific author by id
+      description: Get all authors from the database
       parameters:
         - name: page
           in: query
@@ -178,7 +217,7 @@ paths:
             type: integer
       responses:
         200:
-          description: Successfully retrieved an author
+          description: Successfully retrieved an array of authors
           content:
             application/json:
               schema:
@@ -202,7 +241,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/author'
   /authors/{id}:
-    description: Get, Delete Author based on ID path parameter
+    description: Get, delete, update author based on path id parameter
     get:
       tags:
         - authors
@@ -245,6 +284,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/author'
+        403:
+          description: Forbidden! Only users with role 'ADMIN' can change information about author
     delete:
       tags:
         - authors
@@ -260,9 +301,11 @@ paths:
           description: Successfully deleted Author
         400:
           description: Invalid id format!
+        403:
+          description: Forbidden! Only users with role 'ADMIN' can delete authors
         404:
           description: Author not found. Invalid ID supplied!
-  /author/findByFio:
+  /authors/findByFio:
     get:
       tags:
         - authors
@@ -274,6 +317,30 @@ paths:
           schema:
             type: string
             example: 'Hov'
+        - name: lastName
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 'Love'
+        - name: patronymic
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 'Phi'
+        - name: page
+          required: false
+          in: query
+          description: The page which you want to get
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: The amount of elements in one page
+          schema:
+            type: integer
       responses:
         200:
           description: Successfully returned an array of authors by full name
@@ -283,12 +350,24 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/author'
-  /author/findByGenres:
+  /authors/findByGenres:
     get:
       tags:
         - authors
       description: Get authors by genres
       parameters:
+        - name: page
+          required: false
+          in: query
+          description: The page which you want to get
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: The amount of elements in one page
+          schema:
+            type: integer
         - name: values
           in: query
           required: true
@@ -338,7 +417,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/publisher'
+              $ref: '#/components/schemas/savePublisher'
       responses:
         200:
           description: Publisher successfully added
@@ -347,10 +426,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/publisher'
   /publishers/{id}:
-    description: Get, Delete Publisher based on ID path parameter
+    description: Get, delete update publisher based on ID path parameter
     get:
       tags:
         - publishers
+      description: Get specific publisher by id
       parameters:
         - in: path
           name: id
@@ -365,13 +445,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/publisher'
         400:
-          description: Invalid ID supplied
+          description: Invalid id format!
         404:
-          description: Publisher not found
+          description: Publisher not found! Invalid id supplied
     put:
       tags:
         - publishers
-      description: Update an existing Publisher
+      description: Update an existing publisher
       parameters:
         - name: id
           in: path
@@ -382,7 +462,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/publisher'
+              $ref: '#/components/schemas/savePublisher'
       responses:
         200:
           description: Successfully updated Publisher
@@ -390,6 +470,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/publisher'
+        400:
+          description: Invalid id format!
+        404:
+          description: Publisher not found! Invalid id supplied
     delete:
       tags:
         - publishers
@@ -413,6 +497,18 @@ paths:
         - publishers
       description: Get publishers by name
       parameters:
+        - name: page
+          required: false
+          in: query
+          description: The page which you want to get
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: The amount of elements in one page
+          schema:
+            type: integer
         - name: name
           in: query
           required: true
@@ -434,6 +530,19 @@ paths:
       tags:
         - genres
       description: Get all genres from the database
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: The page which you want to get
+        schema:
+          type: integer
+      - name: size
+        required: false
+        in: query
+        description: The amount of elements in one page
+        schema:
+          type: integer
       responses:
         200:
           description: Successfully returned an array of genres
@@ -544,7 +653,7 @@ paths:
     get:
       tags:
         - users
-      description: Get information about currently logged in user
+      description: Get information about currently logged in user.
       responses:
         200:
           description: Successfully retrieved user from tha database
@@ -562,7 +671,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/user'
+              $ref: '#/components/schemas/saveUser'
       responses:
         200:
           description: Successfully created an user
@@ -640,8 +749,8 @@ paths:
           description: Successfully deleted user
         400:
           description: Invalid id format!
-        403:
-          description: Forbidden! Only users with role ADMIN can delete users
+        # 403:
+        #   description: Forbidden! Only users with role ADMIN can delete users
         404:
           description: User not found. Invalid id supplied!
   /users/findAll:
@@ -649,6 +758,19 @@ paths:
       tags:
         - users
       description: Get all users from the database
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: The page which you want to get
+        schema:
+          type: integer
+      - name: size
+        required: false
+        in: query
+        description: The amount of elements in one page
+        schema:
+          type: integer
       responses:
         200:
           description: Successfully returned an array of users
@@ -658,6 +780,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/user'
+        403:
+          description: Forbidden! Only users with role 'ADMIN' can get information about other users
   /users/putOwn/updateUsername:
     put:
       tags:
@@ -819,7 +943,7 @@ paths:
         400:
           description: Invalid id format!
         403:
-          description: Forbidden! Only users with role ADMIN can change user role and block flag of other users
+          description: Forbidden! Only users with role ADMIN can change status of an order
         404:
           description: User not found. Invalid id supplied!
     delete:
@@ -847,6 +971,19 @@ paths:
       description: Get all orders from the database
       tags:
         - orders
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: The page which you want to get
+        schema:
+          type: integer
+      - name: size
+        required: false
+        in: query
+        description: The amount of elements in one page
+        schema:
+          type: integer
       responses:
         200:
           description: Successfully returned an array of orders
@@ -941,7 +1078,7 @@ components:
           items:
             type: integer
             example: [1, 2]
-        publisher:
+        publisherId:
           type: integer
           example: 2
         title:
@@ -1025,6 +1162,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/book'
+    savePublisher:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Azbuka
     genre:
       type: object
       properties:
@@ -1097,6 +1243,19 @@ components:
         blockFlag:
           type: boolean
           example: false
+    saveUser:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 3
+        userLogin:
+          type: string
+          example: 'Jtravolta'
+        userPassword:
+          type: string
+          format: password
+          example: 'qwe123rty'
     authenticationRequestDto:
       type: object
       properties:

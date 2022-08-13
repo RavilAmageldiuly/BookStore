@@ -127,7 +127,6 @@ public class BookServiceImpl implements BookService {
     }
 
     public int overlapCount(BookEntity book, List<String> genres) {
-
         int overlapCount = 0;
         for (String genre: genres) {
             if(book.getGenre().contains(genre)) {
@@ -138,8 +137,8 @@ public class BookServiceImpl implements BookService {
         return overlapCount;
     }
 
-    public List<Book> getBooksByGenre(List<String> genres) {
-        List<Book> booksByGenre;
+    public List<BookEntity> getBooksByGenre(List<String> genres) {
+        List<BookEntity> booksByGenre;
 
         HashMap<BookEntity, Integer> booksByGenreWithOverlap = new HashMap<>();
 
@@ -148,7 +147,7 @@ public class BookServiceImpl implements BookService {
                 booksByGenreWithOverlap.put(book, overlapCount(book, genres));
         }
 
-        booksByGenre = sortValues(booksByGenreWithOverlap).stream().map(BookEntity::toDto).collect(Collectors.toList());
+        booksByGenre = sortValues(booksByGenreWithOverlap);
 
         Collections.reverse(booksByGenre);
 
@@ -156,7 +155,7 @@ public class BookServiceImpl implements BookService {
 
     }
 
-    private List<BookEntity> sortValues(HashMap map) {
+    private List sortValues(HashMap map) {
         List list = new LinkedList(map.entrySet());
         Collections.sort(list, new Comparator() {
             @Override
@@ -175,13 +174,29 @@ public class BookServiceImpl implements BookService {
         return sortedList;
     }
 
-    public HashSet<AuthorEntity> getAuthorsByGenre(List<String> genres) {
-        HashSet<AuthorEntity> authorsByGenre = new HashSet<>();
-        for (BookEntity book : bookRepository.findAll()) {
-            if (new HashSet<>(book.getGenre()).containsAll(genres)) {
-                authorsByGenre.addAll(book.getAuthorList());
+    public List<AuthorEntity> getAuthorsByGenre(List<String> genres) {
+
+        List<AuthorEntity> allAuthors = authorRepository.findAll();
+        HashMap<AuthorEntity, Integer> authorsWithOverlap = new HashMap<>();
+        List<AuthorEntity> sortedAuthors;
+
+        int counter = 0;
+        for (AuthorEntity author: allAuthors) {
+            Set<String> allAuthorGenres = author.getBooksList().stream().map(BookEntity::getGenre).flatMap(Collection::stream).collect(Collectors.toSet());
+            for (String genre: genres) {
+                if (allAuthorGenres.contains(genre)) {
+                    counter++;
+                }
             }
+            if (counter > 0)
+                authorsWithOverlap.put(author, counter);
+            counter = 0;
         }
-        return authorsByGenre;
+
+        sortedAuthors = sortValues(authorsWithOverlap);
+
+        Collections.reverse(sortedAuthors);
+
+        return sortedAuthors;
     }
 }

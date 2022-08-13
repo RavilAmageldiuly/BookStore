@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -53,12 +52,18 @@ public class AuthorController {
     }
 
     @GetMapping("/findByFio")
-    public List<Author> getAuthorsByFio(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
-        return authorService.getAuthorsByFIO(firstName, lastName, patronymic);
+    public Page<Author> getAuthorsByFio(Pageable pageRequest, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
+        return new PageImpl<>(
+                authorService.getAuthorsByFIO(firstName, lastName, patronymic)
+                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/findByGenres")
-    public Set<Author> getAuthorsByGenre(@RequestParam(name = "values") List<String> genres) {
-        return bookService.getAuthorsByGenre(genres).stream().map(AuthorEntity::toDto).collect(Collectors.toSet());
+    public Page<Author> getAuthorsByGenre(Pageable pageRequest, @RequestParam(name = "values") List<String> genres) {
+        return new PageImpl<>(
+                bookService.getAuthorsByGenre(genres).stream().map(AuthorEntity::toDto).collect(Collectors.toList())
+                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+        );
     }
 }
