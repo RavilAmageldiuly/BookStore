@@ -1,7 +1,5 @@
 package kz.halykacademy.bookstore.security.jwt;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -15,6 +13,8 @@ public class JwtConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilt
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+
+    // любой запрос до того как быть передан серверу, должен пройти через jwtTokenFilter
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(jwtTokenProvider);

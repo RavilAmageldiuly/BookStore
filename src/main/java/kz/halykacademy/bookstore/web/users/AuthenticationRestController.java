@@ -4,6 +4,7 @@ package kz.halykacademy.bookstore.web.users;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.security.jwt.JwtTokenProvider;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
+import kz.halykacademy.bookstore.web.exceptionHandling.BlockedUserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth")
-public class AuthenticationRestControllerV1 {
+public class AuthenticationRestController {
 
     private AuthenticationManager authenticationManager;
 
@@ -30,7 +31,7 @@ public class AuthenticationRestControllerV1 {
     private UserServiceImpl userService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserServiceImpl userService) {
+    public AuthenticationRestController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserServiceImpl userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
@@ -41,21 +42,15 @@ public class AuthenticationRestControllerV1 {
 
         try {
             String username  = requestDto.getUsername();
-
-            /**
-             *
-             *
-             *              Handle blocked User! from error 500 -> error 403
-             *
-             *
-             * */
-
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-
             UserEntity user = userService.findByUsername(username);
 
-            if (user == null )
+            if (user == null)
                 throw new UsernameNotFoundException("User with username: " + username + " not found!");
+
+            if (user.getBlockFlag())
+                throw new BlockedUserException("User is blocked!");
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
 
             String token = jwtTokenProvider.createToken(username, user.getUserRole());
 
@@ -66,7 +61,7 @@ public class AuthenticationRestControllerV1 {
             return ResponseEntity.ok(response);
 
         } catch(AuthenticationException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new BadCredentialsException("Invalid username or password!");
         }
     }

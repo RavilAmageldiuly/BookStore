@@ -20,6 +20,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         this.userService = userService;
     }
 
+
+    // Method creates JwtUser based on user that we found by username (which we pass to the method) from the database,
+    // for further work with it (jwtUser)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userService.findByUsername(username);

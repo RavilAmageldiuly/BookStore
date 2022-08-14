@@ -1,18 +1,20 @@
 package kz.halykacademy.bookstore.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 
 @AllArgsConstructor
 @Getter
 @Setter
+// User с точки зрения spring security, то с чем он будет работать как с юзером
 public class JwtUser implements UserDetails {
     private final Long id;
     private final String username;
@@ -23,9 +25,9 @@ public class JwtUser implements UserDetails {
     public JwtUser(
             Long id,
             String username,
-            String password, List<? extends GrantedAuthority> authorities,
-            boolean enabled,
-            Date lastPasswordResetDate
+            String password,
+            List<? extends GrantedAuthority> authorities,
+            boolean enabled
     ) {
         this.id = id;
         this.username = username;
