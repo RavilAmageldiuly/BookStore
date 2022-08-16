@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(
                 new UserEntity(
                         saveUser.getUserId(),
-                        saveUser.getUserLogin(),
+                        saveUser.getUsername(),
                         saveUser.getUserPassword(),
                         "USER",
                         false

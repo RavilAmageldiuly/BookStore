@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
     private Long userId;
-    private String userLogin;
+    private String username;
     private String userPassword;
     private String userRole;
     private Boolean blockFlag;
