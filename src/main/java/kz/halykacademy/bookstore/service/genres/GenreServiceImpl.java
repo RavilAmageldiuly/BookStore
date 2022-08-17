@@ -4,7 +4,6 @@ import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.dao.genres.GenreRepository;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.genres.Genre;
-import kz.halykacademy.bookstore.web.genres.SaveGenre;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Genre postGenre(SaveGenre saveGenre) {
+    public Genre postGenre(Genre saveGenre) {
         return genreRepository.save(
                 new GenreEntity(
                         saveGenre.getGenreId(),
@@ -46,7 +45,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Genre putGenre(Long id, SaveGenre saveGenre) {
+    public Genre putGenre(Long id, Genre saveGenre) {
         if (!genreRepository.existsById(id))
             throw new ResourceNotFoundException("Genre not found. Invalid id Supplied!");
         return genreRepository.save(

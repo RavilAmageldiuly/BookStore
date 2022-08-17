@@ -179,7 +179,7 @@ VALUES ('Испытания Аполлона. Гробница тирана', 26
 
 
 INSERT INTO books("title", "price", "publisher_id", "release_year", "book_quantity", "book_image", "number_of_pages")
-VALUES ('Мир хищных городов', 5999, 9, 2019, 20,
+VALUES ('Хроники хищных городов', 5999, 9, 2019, 20,
         'https://simg.marwin.kz/media/catalog/product/cache/41deb699a7fea062a8915debbbb0442c/1/0/1031616277.jpg', 192);
 
 

@@ -69,6 +69,10 @@ public class BookEntity {
     @OneToMany(mappedBy = "book", cascade = CascadeType.MERGE)
     private List<OrderBook> booksInOrder = new ArrayList<>();
 
+    public void removeAuthor(AuthorEntity authorEntity) {
+        authorList.remove(authorEntity);
+    }
+
 
     public Book toDto() {
         return new Book(

@@ -55,6 +55,11 @@ public class OrderController {
         return orderService.putOrder(userDetails.getUsername(), id, saveOrder);
     }
 
+    @PutMapping("/changeStatus")
+    public Order changeOrderStatus(@RequestParam Long id, @RequestParam String newStatus) {
+        return orderService.changeOrderStatus(newStatus, id);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);

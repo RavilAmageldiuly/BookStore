@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveOrder {
-    private String orderStatus;
     private HashSet<Long> orderedBooks;
     private List<Integer> bookAmount;
 }

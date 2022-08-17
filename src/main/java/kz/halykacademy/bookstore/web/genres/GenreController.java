@@ -33,12 +33,12 @@ public class GenreController {
     }
 
     @PostMapping
-    public Genre postGenre(@RequestBody SaveGenre saveGenre) {
+    public Genre postGenre(@RequestBody Genre saveGenre) {
         return genreService.postGenre(saveGenre);
     }
 
     @PutMapping("/{id}")
-    public Genre putGenre(@PathVariable Long id, @RequestBody SaveGenre saveGenre) {
+    public Genre putGenre(@PathVariable Long id, @RequestBody Genre saveGenre) {
         return genreService.putGenre(id, saveGenre);
     }
 

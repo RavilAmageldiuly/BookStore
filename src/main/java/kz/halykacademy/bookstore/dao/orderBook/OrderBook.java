@@ -13,12 +13,12 @@ public class OrderBook {
     @EmbeddedId
     private OrderBookId id = new OrderBookId();
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapsId("orderId")
     @JoinColumn(name = "order_id")
     private OrderEntity order;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapsId("bookId")
     @JoinColumn(name = "book_id")
     private BookEntity book;

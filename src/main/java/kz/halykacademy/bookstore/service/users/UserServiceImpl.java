@@ -3,6 +3,7 @@ package kz.halykacademy.bookstore.service.users;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.dao.users.UserRepository;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
+import kz.halykacademy.bookstore.web.exceptionHandling.UsernameAlreadyExistsException;
 import kz.halykacademy.bookstore.web.users.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User postUser(User saveUser) {
+
+        if (userRepository.findUserEntityByUsername(saveUser.getUsername()) != null)
+            throw new UsernameAlreadyExistsException("User with username: " + saveUser.getUsername() + " already exists!");
 
         saveUser.setUserPassword(passwordEncoder.encode(saveUser.getUserPassword()));
 

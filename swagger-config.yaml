@@ -24,12 +24,14 @@ paths:
           description: The page which you want to get
           schema:
             type: integer
+            example: 0
         - name: size
           required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
+            example: 10
       responses:
         200:
           description: Successfully returned an array of books
@@ -68,6 +70,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       responses:
         200:
           description: Successfully returned book
@@ -76,7 +79,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/book'
         400:
-          description: Bad request. Ivalid id format!
+          description: Bad request. Invalid id format!
         404:
           description: Book not found. Invalid ID supplied!
     put:
@@ -89,6 +92,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       requestBody:
         content:
           application/json:
@@ -117,6 +121,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       responses:
         200:
           description: Successfully deleted Book
@@ -138,12 +143,14 @@ paths:
           description: The page which you want to get
           schema:
             type: integer
+            example: 0
         - name: size
           required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
+            example: 10
         - name: title
           required: true
           in: query
@@ -152,7 +159,7 @@ paths:
             example: 'Crime'
       responses:
         200:
-          description: Successfullt found book by title
+          description: Successfully found book by title
           content:
             application/json:
               schema:
@@ -173,12 +180,14 @@ paths:
           description: The page which you want to get
           schema:
             type: integer
+            example: 0
         - name: size
           required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
+            example: 10
         - name: values
           in: query
           required: true
@@ -210,11 +219,13 @@ paths:
           required: false
           schema:
             type: integer
+            example: 0
         - name: size
           in: query
           required: false
           schema:
             type: integer
+            example: 10
       responses:
         200:
           description: Successfully retrieved an array of authors
@@ -251,6 +262,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       responses:
         200:
           description: Successfully returned Author
@@ -272,6 +284,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       requestBody:
         content:
           application/json:
@@ -296,6 +309,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       responses:
         200:
           description: Successfully deleted Author
@@ -335,12 +349,14 @@ paths:
           description: The page which you want to get
           schema:
             type: integer
+            example: 0
         - name: size
           required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
+            example: 10
       responses:
         200:
           description: Successfully returned an array of authors by full name
@@ -362,12 +378,14 @@ paths:
           description: The page which you want to get
           schema:
             type: integer
+            example: 0
         - name: size
           required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
+            example: 10
         - name: values
           in: query
           required: true
@@ -396,10 +414,12 @@ paths:
           in: query
           schema:
             type: integer
+            example: 0
         - name: size
           in: query
           schema:
             type: integer
+            example: 10
       responses:
         200:
           description: Successfully returned an array of publishers
@@ -437,6 +457,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       responses:
         200:
           description: Successfully returned Publisher
@@ -458,6 +479,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       requestBody:
         content:
           application/json:
@@ -484,6 +506,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 2
       responses:
         200:
           description: Successfully deleted Publisher
@@ -503,12 +526,14 @@ paths:
           description: The page which you want to get
           schema:
             type: integer
+            example: 0
         - name: size
           required: false
           in: query
           description: The amount of elements in one page
           schema:
             type: integer
+            example: 10
         - name: name
           in: query
           required: true
@@ -525,7 +550,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/publisher'
   /genres:
-    description: Genre resourse. Get, post genres
+    description: Genre resource. Get, post genres
     get:
       tags:
         - genres
@@ -537,12 +562,14 @@ paths:
         description: The page which you want to get
         schema:
           type: integer
+          example: 0
       - name: size
         required: false
         in: query
         description: The amount of elements in one page
         schema:
           type: integer
+          example: 10
       responses:
         200:
           description: Successfully returned an array of genres
@@ -603,7 +630,7 @@ paths:
           required: true
           schema:
             type: integer
-            example: 0
+            example: 2
       requestBody:
         content:
           application/json:
@@ -634,7 +661,7 @@ paths:
           required: true
           schema:
             type: integer
-            example: 0
+            example: 2
       responses:
         200:
           description: Successfully deleted a genre
@@ -756,12 +783,14 @@ paths:
         description: The page which you want to get
         schema:
           type: integer
+          example: 0
       - name: size
         required: false
         in: query
         description: The amount of elements in one page
         schema:
           type: integer
+          example: 10
       responses:
         200:
           description: Successfully returned an array of users
@@ -940,7 +969,7 @@ paths:
     delete:
       tags:
         - orders
-      description: Delete a order with specific id
+      description: Delete a order with specific id. Order record does not erases from the database, rather order status changes to 'canceled'
       parameters:
         - name: id
           in: path
@@ -969,12 +998,14 @@ paths:
         description: The page which you want to get
         schema:
           type: integer
+          example: 0
       - name: size
         required: false
         in: query
         description: The amount of elements in one page
         schema:
           type: integer
+          example: 10
       responses:
         200:
           description: Successfully returned an array of orders
@@ -1017,6 +1048,37 @@ paths:
           description: Forbidden! User not authorized.
         404:
           description: User not found. Invalid id supplied!
+  /orders/changeStatus:
+    description: Method for admins to change order status
+    put:
+      tags:
+        - orders
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - name: newStatus
+          in: query
+          required: true
+          schema:
+            type: string
+            example: approved
+      responses:
+        200:
+          description: Successfully changed status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order'
+        400:
+          description: Invalid id format!
+        403:
+          description: Forbidden! Only users with role admin can change status of the order
+        404:
+          description: User not found. Invalid id supplied!
 components:
   schemas:
     book:
@@ -1024,7 +1086,7 @@ components:
       properties:
         id:
           type: integer
-          example: 0
+          example: 1
         price:
           type: number
           format: double
@@ -1033,10 +1095,10 @@ components:
           type: array
           items:
             type: string
-            example: ['Fyodor Dostoevsky', 'Hovard Lovecraft']
+            example: ['Fyodor Dostoevsky', 'Howard Lovecraft']
         publisher:
           type: string
-          example: 'Too Azbuka'
+          example: 'Azbuka'
         title:
           type: string
           example: 'Clean Code'
@@ -1050,10 +1112,10 @@ components:
           type: array
           items:
             type: string
-            example: ['mystic', 'thriller']
+            example: ['fiction', 'children literature ']
         bookQuantity:
           type: integer
-          example: 2
+          example: 10
     saveBook:
       type: object
       properties:
@@ -1085,16 +1147,16 @@ components:
           type: array
           items:
             type: integer
-            example: [0, 7]
+            example: [1, 7]
         bookQuantity:
           type: integer
-          example: 2
+          example: 10
     author:
       type: object
       properties:
         id:
           type: integer
-          example: 0
+          example: 1
         firstName:
           type: string
           example: Leo
@@ -1116,13 +1178,13 @@ components:
           type: array
           items:
             type: string
-            example: ['mystic', 'horror']
+            example: ['novel', 'historical fiction']
     saveAuthor:
       type: object
       properties:
         id:
           type: integer
-          example: 0
+          example: 1
         firstName:
           type: string
           example: Leo
@@ -1136,16 +1198,12 @@ components:
           type: string
           format: date
           example: 1828-09-09
-        booksList:
-          type: array
-          items:
-            $ref: '#/components/schemas/book'
     publisher:
       type: object
       properties:
         id:
           type: integer
-          example: 0
+          example: 1
         name:
           type: string
           example: Azbuka
@@ -1167,7 +1225,7 @@ components:
       properties:
         genreId:
           type: integer
-          example: 0
+          example: 1
         genreName:
           type: string
           example: 'thriller'
@@ -1176,7 +1234,7 @@ components:
       properties:
         orderID:
           type: integer
-          example: 0
+          example: 1
         userId:
           type: integer
           example: 1
@@ -1202,35 +1260,32 @@ components:
     saveOrder:
       type: object
       properties:
-        orderStatus:
-          type: string
-          example: 'approved'
         orderedBooks:
           type: array
           items:
             type: integer
-            example: [0, 2]
+            example: [1, 2]
         bookAmount:
           type: array
           items:
             type: integer
-            example: [0, 2]
+            example: [1, 2]
     user:
       type: object
       properties:
         userId:
           type: integer
-          example: 3
+          example: 1
         userLogin:
           type: string
-          example: 'Jtravolta'
+          example: 'admin'
         userPassword:
           type: string
           format: password
-          example: 'qwe123rty'
+          example: 'admin'
         userRole:
           type: string
-          example: 'USER'
+          example: 'ADMIN'
         blockFlag:
           type: boolean
           example: false
@@ -1239,30 +1294,30 @@ components:
       properties:
         userId:
           type: integer
-          example: 3
+          example: 1
         userLogin:
           type: string
-          example: 'Jtravolta'
+          example: 'regularUser'
         userPassword:
           type: string
           format: password
-          example: 'qwe123rty'
+          example: 'qwerty'
     authenticationRequestDto:
       type: object
       properties:
         username:
           type: string
-          example: 'Jtravolta'
+          example: 'admin'
         password:
           type: string
           format: password
-          example: 'qwe123rty'
+          example: 'admin'
     response:
       type: object
       properties:
         username:
           type: string
-          example: 'Jtravolta'
+          example: 'admin'
         token:
           type: string
           example: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyZWd1bGFyIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2NjAxMzgyOTAsImV4cCI6MTY2MDE0OTA5MH0.ujnJLKBuxvrXxbNsU5f41ZrkPjWIq8_GyUG6GI7hhJ0'

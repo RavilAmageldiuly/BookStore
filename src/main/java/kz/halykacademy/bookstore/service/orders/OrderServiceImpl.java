@@ -7,7 +7,10 @@ import kz.halykacademy.bookstore.dao.orders.OrderEntity;
 import kz.halykacademy.bookstore.dao.orders.OrderRepository;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
-import kz.halykacademy.bookstore.web.exceptionHandling.*;
+import kz.halykacademy.bookstore.web.exceptionHandling.AttemptToUseAlienResource;
+import kz.halykacademy.bookstore.web.exceptionHandling.NotEnoughBooksException;
+import kz.halykacademy.bookstore.web.exceptionHandling.PriceExceedsLimitException;
+import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.orders.Order;
 import kz.halykacademy.bookstore.web.orders.SaveOrder;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserServiceImpl userService;
     private final BookRepository bookRepository;
+
 
     @Override
     public List<Order> getAll() {
@@ -59,49 +63,48 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderedBooks(getOrderBooks(order, saveOrder));
 
         return orderRepository.save(order).toDto();
-
     }
 
     @Override
     public Order putOrder(String username, Long orderId, SaveOrder saveOrder) {
 
+
+
+
+        //          не работает!!
+
+
+
+
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
         UserEntity user = userService.findByUsername(username);
-        UserEntity owner = order.getUser();
-        String userRole = user.getUserRole();
 
-        // must return (check)
+        UserEntity owner = order.getUser();
+
         returnBooks(order.getOrderedBooks());
 
-        if (!owner.equals(user) && !userRole.equals("ADMIN"))
+        if (!owner.equals(user))
             throw new AttemptToUseAlienResource("Order does not belong to the current user!");
 
-        List<OrderBook> booksList = getOrderBooks(order, saveOrder);
-
-        switch (userRole) {
-            case "USER":
-                order.setOrderedBooks(booksList);
-
-            case "ADMIN":
-                if (!owner.equals(user))
-                    booksList = order.getOrderedBooks();
-
-                order.setOrderedBooks(booksList);
-                order.setOrderStatus(saveOrder.getOrderStatus());
-        }
+        order.setOrderedBooks(getOrderBooks(order, saveOrder));
 
         return orderRepository.save(order).toDto();
     }
 
+    public Order changeOrderStatus(String newStatus, Long id) {
+        if (orderRepository.existsById(id))
+            throw new ResourceNotFoundException("Order not found! Invalid id supplied");
+
+        return orderRepository.changeOrderStatus(newStatus, id).toDto();
+    }
+
     @Override
     public void deleteOrder(Long id) {
-
         OrderEntity canceledOrder = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
-
         canceledOrder.setOrderStatus("canceled");
         canceledOrder.setOrderTime(LocalDateTime.now());
         returnBooks(canceledOrder.getOrderedBooks());
-//        canceledOrder.setOrderedBooks(null);
+        canceledOrder.getOrderedBooks().clear();
 
         orderRepository.save(canceledOrder);
     }
@@ -141,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
             int checkBookAmount = book.getBookQuantity() - bookAmount.get(count);
 
             if (checkBookAmount < 0) {
-                throw new NotEnoughBookException("Not enough books!");
+                throw new NotEnoughBooksException("Not enough books!");
             }
 
             book.setBookQuantity(checkBookAmount);

@@ -1,88 +1,19 @@
 package kz.halykacademy.bookstore.web.authors;
 
-import kz.halykacademy.bookstore.web.books.Book;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SaveAuthor {
-
     private long id;
     private String firstName;
     private String lastName;
     private String patronymic;
     private LocalDate birthday;
-    private List<Book> booksList;
-
-    public SaveAuthor() {}
-
-    public SaveAuthor(String firstName, String lastName, String patronymic, LocalDate birthday, List<Book> booksList) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymic = patronymic;
-        this.birthday = birthday;
-        this.booksList = booksList;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPatronymic() {
-        return patronymic;
-    }
-
-    public void setPatronymic(String patronymic) {
-        this.patronymic = patronymic;
-    }
-
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
-
-    public List<Book> getBooksList() {
-        return booksList;
-    }
-
-    public void setBooksList(List<Book> booksList) {
-        this.booksList = booksList;
-    }
-
-    @Override
-    public String toString() {
-        return "Author{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", patronymic='" + patronymic + '\'' +
-                ", birthday=" + birthday.toString() +
-                ", booksList=" + booksList.toString() +
-                '}';
-    }
 }

@@ -40,9 +40,12 @@ public class OrderEntity {
     @Column(name = "order_time")
     private LocalDateTime orderTime;
 
-    @OneToMany(mappedBy =  "order", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy =  "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderBook> orderedBooks = new ArrayList<>();
 
+    public void setOrderedBooks(List<OrderBook> orderedBooks) {
+        this.orderedBooks.addAll(orderedBooks);
+    }
 
     public Order toDto() {
         return new Order(

@@ -42,8 +42,9 @@ public class AuthorEntity {
     private LocalDate birthday;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "authorList")
+    @ManyToMany(mappedBy = "authorList", cascade = CascadeType.MERGE)
     private List<BookEntity> booksList = new ArrayList<>();
+
 
     public Author toDto() {
         return new Author(
