@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(
                 new UserEntity(
-                        saveUser.getUserId(),
+                        null,
                         saveUser.getUsername(),
                         saveUser.getUserPassword(),
                         "USER",
@@ -52,14 +53,21 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional
     @Override
     public User changePassword(String username, String password) {
-        return userRepository.updateUserPassword(username, password).toDto();
+        return userRepository.getReferenceById(
+                (long) userRepository.updateUserPassword(username, passwordEncoder.encode(password))
+        ).toDto();
     }
 
+
+    @Transactional
     @Override
     public User changeUsername(String oldUsername, String newUsername) {
-        return userRepository.updateUsername(oldUsername, newUsername).toDto();
+        return userRepository.getReferenceById(
+                (long) userRepository.updateUsername(oldUsername, newUsername)
+        ).toDto();
     }
 
     @Override
@@ -69,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(
                 new UserEntity(
-                        user.getUserId(),
+                        userId,
                         user.getUsername(),
                         user.getUserPassword(),
                         saveUser.getUserRole().toUpperCase(),

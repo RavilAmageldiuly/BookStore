@@ -78,7 +78,7 @@ create table genre_book
 create table users
 (
     user_id       serial primary key,
-    username      varchar,
+    username      varchar not null unique,
     user_password varchar,
     user_role     varchar,
     block_flag    boolean

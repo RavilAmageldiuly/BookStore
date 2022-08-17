@@ -56,7 +56,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Author postAuthor(SaveAuthor saveAuthor) {
         AuthorEntity saved = authorRepository.save(
                 new AuthorEntity(
-                        saveAuthor.getId(),
+                        null,
                         saveAuthor.getFirstName(),
                         saveAuthor.getLastName(),
                         saveAuthor.getPatronymic(),
@@ -83,8 +83,8 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.deleteById(id);
     }
 
-    @Override
-    public List<Author> getAuthorsByFIO(String firstName, String lastName, String patronymic) {
-        return authorRepository.findAllByFirstNameContainingAndLastNameContainingAndPatronymicContainingIgnoreCase(firstName, lastName, patronymic).stream().map(AuthorEntity::toDto).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<Author> getAuthorsByFIO(String authorFullName) {
+//
+//    }
 }

@@ -156,7 +156,7 @@ paths:
           in: query
           schema:
             type: string
-            example: 'Crime'
+            example: 'Комедия'
       responses:
         200:
           description: Successfully found book by title
@@ -195,7 +195,7 @@ paths:
             type: array
             items:
               type: string
-              example: ['mystic', 'thriller']
+              example: [mystic, thriller]
       responses:
         200:
           description: Successfully retrieved array of books
@@ -319,53 +319,53 @@ paths:
           description: Forbidden! Only users with role 'ADMIN' can delete authors
         404:
           description: Author not found. Invalid ID supplied!
-  /authors/findByFio:
-    get:
-      tags:
-        - authors
-      description: Get authors by firstname, lastname, patronymic
-      parameters:
-        - name: firstName
-          in: query
-          required: true
-          schema:
-            type: string
-            example: 'Hov'
-        - name: lastName
-          in: query
-          required: true
-          schema:
-            type: string
-            example: 'Love'
-        - name: patronymic
-          in: query
-          required: true
-          schema:
-            type: string
-            example: 'Phi'
-        - name: page
-          required: false
-          in: query
-          description: The page which you want to get
-          schema:
-            type: integer
-            example: 0
-        - name: size
-          required: false
-          in: query
-          description: The amount of elements in one page
-          schema:
-            type: integer
-            example: 10
-      responses:
-        200:
-          description: Successfully returned an array of authors by full name
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/author'
+#  /authors/findByFio:
+#    get:
+#      tags:
+#        - authors
+#      description: Get authors by firstname, lastname, patronymic
+#      parameters:
+#        - name: page
+#          required: false
+#          in: query
+#          description: The page which you want to get
+#          schema:
+#            type: integer
+#            example: 0
+#        - name: size
+#          required: false
+#          in: query
+#          description: The amount of elements in one page
+#          schema:
+#            type: integer
+#            example: 10
+#        - name: firstName
+#          in: query
+#          required: true
+#          schema:
+#            type: string
+#            example: 'Го'
+#        - name: lastName
+#          in: query
+#          required: true
+#          schema:
+#            type: string
+#            example: 'Фи'
+#        - name: patronymic
+#          in: query
+#          required: true
+#          schema:
+#            type: string
+#            example: 'Лав'
+#      responses:
+#        200:
+#          description: Successfully returned an array of authors by full name
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/author'
   /authors/findByGenres:
     get:
       tags:
@@ -587,7 +587,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/genre'
+              $ref: '#/components/schemas/saveGenre'
       responses:
         200:
           description: Successfully created a genre
@@ -635,7 +635,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/genre'
+              $ref: '#/components/schemas/saveGenre'
       responses:
         200:
           description: Successfully updated a genre
@@ -1119,9 +1119,6 @@ components:
     saveBook:
       type: object
       properties:
-        id:
-          type: integer
-          example: 0
         price:
           type: number
           format: double
@@ -1182,9 +1179,6 @@ components:
     saveAuthor:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         firstName:
           type: string
           example: Leo
@@ -1214,9 +1208,6 @@ components:
     savePublisher:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         name:
           type: string
           example: Azbuka
@@ -1228,7 +1219,13 @@ components:
           example: 1
         genreName:
           type: string
-          example: 'thriller'
+          example: Философия
+    saveGenre:
+      type: object
+      properties:
+        genreName:
+          type: string
+          example: Философия
     order:
       type: object
       properties:
@@ -1276,7 +1273,7 @@ components:
         userId:
           type: integer
           example: 1
-        userLogin:
+        username:
           type: string
           example: 'admin'
         userPassword:
@@ -1292,10 +1289,7 @@ components:
     saveUser:
       type: object
       properties:
-        userId:
-          type: integer
-          example: 1
-        userLogin:
+        username:
           type: string
           example: 'regularUser'
         userPassword:

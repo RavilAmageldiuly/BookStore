@@ -78,7 +78,7 @@ public class BookServiceImpl implements BookService {
 
         return bookRepository.save(
                 new BookEntity(
-                        saveBook.getId(),
+                        null,
                         saveBook.getPrice(),
                         checkAndGetAuthors(saveBook),
                         publisherRepository.findById(saveBook.getPublisherId()).orElseThrow(() ->
@@ -112,14 +112,14 @@ public class BookServiceImpl implements BookService {
         for (Long authorId : saveBook.getAuthorList()) {
             authors.add(authorRepository.findById(authorId).orElseThrow(() ->
                     new ResourceNotFoundException("Invalid author id supplied! Author with id: " + authorId +
-                    " does not exists")));
+                            " does not exists")));
         }
         return authors;
     }
 
     public List<GenreEntity> checkAndGetGenres(SaveBook saveBook) {
         List<GenreEntity> genres = new ArrayList<>();
-        for (Long genreId: saveBook.getGenreList()) {
+        for (Long genreId : saveBook.getGenreList()) {
             genres.add(genreRepository.findById(genreId).orElseThrow(() -> new ResourceNotFoundException("Invalid genre id supplied! Genre with id: " + genreId +
                     " does not exists")));
         }
@@ -128,8 +128,8 @@ public class BookServiceImpl implements BookService {
 
     public int overlapCount(BookEntity book, List<String> genres) {
         int overlapCount = 0;
-        for (String genre: genres) {
-            if(book.getGenre().contains(genre)) {
+        for (String genre : genres) {
+            if (book.getGenre().contains(formatGenre(genre))) {
                 overlapCount++;
             }
         }
@@ -138,6 +138,7 @@ public class BookServiceImpl implements BookService {
     }
 
     public List<BookEntity> getBooksByGenre(List<String> genres) {
+
         List<BookEntity> booksByGenre;
 
         HashMap<BookEntity, Integer> booksByGenreWithOverlap = new HashMap<>();
@@ -166,7 +167,7 @@ public class BookServiceImpl implements BookService {
 
         List sortedList = new ArrayList<>();
 
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        for (Iterator it = list.iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             sortedList.add(entry.getKey());
         }
@@ -181,10 +182,10 @@ public class BookServiceImpl implements BookService {
         List<AuthorEntity> sortedAuthors;
 
         int counter = 0;
-        for (AuthorEntity author: allAuthors) {
+        for (AuthorEntity author : allAuthors) {
             Set<String> allAuthorGenres = author.getBooksList().stream().map(BookEntity::getGenre).flatMap(Collection::stream).collect(Collectors.toSet());
-            for (String genre: genres) {
-                if (allAuthorGenres.contains(genre)) {
+            for (String genre : genres) {
+                if (allAuthorGenres.contains(formatGenre(genre))) {
                     counter++;
                 }
             }
@@ -198,5 +199,10 @@ public class BookServiceImpl implements BookService {
         Collections.reverse(sortedAuthors);
 
         return sortedAuthors;
+    }
+
+    private String formatGenre(String genre) {
+        return genre.substring(0, 1).toUpperCase() +
+                genre.substring(1).toLowerCase();
     }
 }

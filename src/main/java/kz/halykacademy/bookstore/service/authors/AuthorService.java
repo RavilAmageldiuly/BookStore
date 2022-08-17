@@ -16,8 +16,6 @@ public interface AuthorService {
     Author postAuthor(SaveAuthor saveAuthor);
 
     void deleteAuthor(long id);
-
-    List<Author> getAuthorsByFIO(String firstName, String lastName, String patronymic);
 }
 
 

@@ -51,13 +51,14 @@ public class AuthorController {
         authorService.deleteAuthor(id);
     }
 
-    @GetMapping("/findByFio")
-    public Page<Author> getAuthorsByFio(Pageable pageRequest, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
-        return new PageImpl<>(
-                authorService.getAuthorsByFIO(firstName, lastName, patronymic)
-                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
-        );
-    }
+//    @GetMapping("/findByFio")
+//    public Page<Author> getAuthorsByFio(Pageable pageRequest, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "patronymic") String patronymic) {
+//        System.out.println(firstName + "; " + lastName + "; " + patronymic);
+//        return new PageImpl<>(
+//                authorService.getAuthorsByFIO(firstName, lastName, patronymic)
+//                        .stream().skip(pageRequest.getOffset()).limit(pageRequest.getPageSize()).collect(Collectors.toList())
+//        );
+//    }
 
     @GetMapping("/findByGenres")
     public Page<Author> getAuthorsByGenre(Pageable pageRequest, @RequestParam(name = "values") List<String> genres) {

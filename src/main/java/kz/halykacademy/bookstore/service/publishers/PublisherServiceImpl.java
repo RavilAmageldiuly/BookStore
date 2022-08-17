@@ -48,7 +48,7 @@ public class PublisherServiceImpl implements PublisherService{
     public Publisher postPublisher(SavePublisher savePublisher) {
         PublisherEntity saved = publisherRepository.save(
                 new PublisherEntity(
-                        savePublisher.getId(),
+                        null,
                         savePublisher.getName(),
                         null
                 )

@@ -16,6 +16,7 @@ import kz.halykacademy.bookstore.web.orders.SaveOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,11 +92,13 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order).toDto();
     }
 
+    @Transactional
     public Order changeOrderStatus(String newStatus, Long id) {
-        if (orderRepository.existsById(id))
+        if (!orderRepository.existsById(id))
             throw new ResourceNotFoundException("Order not found! Invalid id supplied");
 
-        return orderRepository.changeOrderStatus(newStatus, id).toDto();
+        orderRepository.changeOrderStatus(newStatus, id);
+        return orderRepository.getReferenceById(id).toDto();
     }
 
     @Override

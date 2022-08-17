@@ -11,7 +11,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveBook {
-    private long id;
     private double price;
     private Set<Long> authorList;
     private Long publisherId;

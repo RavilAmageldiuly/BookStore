@@ -27,12 +27,12 @@ public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id", nullable = false)
-    private long bookId;
+    private Long bookId;
 
     @Column
     private double price;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "author_book",
             joinColumns = @JoinColumn(name = "book_id"),

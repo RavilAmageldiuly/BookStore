@@ -38,7 +38,7 @@ public class GenreServiceImpl implements GenreService {
     public Genre postGenre(Genre saveGenre) {
         return genreRepository.save(
                 new GenreEntity(
-                        saveGenre.getGenreId(),
+                        null,
                         saveGenre.getGenreName()
                 )
         ).toDto();
