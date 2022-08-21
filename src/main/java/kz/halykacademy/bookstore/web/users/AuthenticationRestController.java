@@ -4,7 +4,7 @@ package kz.halykacademy.bookstore.web.users;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.security.jwt.JwtTokenProvider;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
-import kz.halykacademy.bookstore.web.exceptionHandling.BlockedUserException;
+import kz.halykacademy.bookstore.web.exceptionHandling.UserForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,7 +48,7 @@ public class AuthenticationRestController {
                 throw new UsernameNotFoundException("User with username: " + username + " not found!");
 
             if (user.getBlockFlag())
-                throw new BlockedUserException("User is blocked!");
+                throw new UserForbiddenException("User is blocked!");
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
 

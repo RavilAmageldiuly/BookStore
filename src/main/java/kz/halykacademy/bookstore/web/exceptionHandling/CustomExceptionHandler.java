@@ -21,28 +21,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
 
-    @ExceptionHandler(value = BlockedUserException.class)
-    protected ResponseEntity<Object> handleBlockedUserException(BlockedUserException exception) {
+    @ExceptionHandler(value = UserForbiddenException.class)
+    protected ResponseEntity<Object> handleBlockedUserException(UserForbiddenException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
 
-    @ExceptionHandler(value = PriceExceedsLimitException.class)
-    protected ResponseEntity<Object> handlePriceExceedsLimitException(PriceExceedsLimitException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
-    }
-
-    @ExceptionHandler(value = AttemptToUseAlienResource.class)
-    protected ResponseEntity<Object> handleAttemptToUseAlienResourceException(AttemptToUseAlienResource exception) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
-    }
-
-    @ExceptionHandler(value = NotEnoughBooksException.class)
-    protected ResponseEntity<Object> handleNotEnoughBookException(NotEnoughBooksException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
-    }
-
-    @ExceptionHandler(value = UsernameAlreadyExistsException.class)
-    protected ResponseEntity<Object> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException exception) {
+    @ExceptionHandler(value = UserBadRequestException.class)
+    protected ResponseEntity<Object> handlePriceExceedsLimitException(UserBadRequestException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
 }

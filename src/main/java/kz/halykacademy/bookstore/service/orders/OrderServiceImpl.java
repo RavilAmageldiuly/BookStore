@@ -7,10 +7,9 @@ import kz.halykacademy.bookstore.dao.orders.OrderEntity;
 import kz.halykacademy.bookstore.dao.orders.OrderRepository;
 import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
-import kz.halykacademy.bookstore.web.exceptionHandling.AttemptToUseAlienResource;
-import kz.halykacademy.bookstore.web.exceptionHandling.NotEnoughBooksException;
-import kz.halykacademy.bookstore.web.exceptionHandling.PriceExceedsLimitException;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
+import kz.halykacademy.bookstore.web.exceptionHandling.UserBadRequestException;
+import kz.halykacademy.bookstore.web.exceptionHandling.UserForbiddenException;
 import kz.halykacademy.bookstore.web.orders.Order;
 import kz.halykacademy.bookstore.web.orders.SaveOrder;
 import lombok.RequiredArgsConstructor;
@@ -69,25 +68,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order putOrder(String username, Long orderId, SaveOrder saveOrder) {
 
-
-
-
-        //          не работает!!
-
-
-
-
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
         UserEntity user = userService.findByUsername(username);
-
         UserEntity owner = order.getUser();
 
+        if (!owner.equals(user)) {
+            throw new UserForbiddenException("Order does not belong to the current user!");
+        }
+
         returnBooks(order.getOrderedBooks());
-
-        if (!owner.equals(user))
-            throw new AttemptToUseAlienResource("Order does not belong to the current user!");
-
+        order.getOrderedBooks().clear();
         order.setOrderedBooks(getOrderBooks(order, saveOrder));
+
+        //      Bug in hibernate!!!
 
         return orderRepository.save(order).toDto();
     }
@@ -114,6 +107,10 @@ public class OrderServiceImpl implements OrderService {
 
     public List<OrderBook> getOrderBooks(OrderEntity orderEntity, SaveOrder saveOrder) {
 
+        if (saveOrder.getOrderedBooks().size() != saveOrder.getBookAmount().size())
+            throw new UserBadRequestException("Discrepancy between the number of ordered books and their amount!");
+
+
         List<OrderBook> orderBookList = new ArrayList<>();
 
         List<BookEntity> orderedBooks = new ArrayList<>();
@@ -132,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
         for (int i = 0; i < saveOrder.getOrderedBooks().size(); i++) {
             total += orderedBooks.get(i).getPrice() * bookAmount.get(i);
             if (total > 10000) {
-                throw new PriceExceedsLimitException("Total price of order should be less than 10000₸.");
+                throw new UserBadRequestException("Total price of order should be less than 10000₸.");
             }
         }
 
@@ -147,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
             int checkBookAmount = book.getBookQuantity() - bookAmount.get(count);
 
             if (checkBookAmount < 0) {
-                throw new NotEnoughBooksException("Not enough books!");
+                throw new UserBadRequestException("Not enough books!");
             }
 
             book.setBookQuantity(checkBookAmount);

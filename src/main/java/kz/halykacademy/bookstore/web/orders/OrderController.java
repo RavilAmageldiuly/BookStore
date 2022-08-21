@@ -45,11 +45,6 @@ public class OrderController {
         return orderService.postOrder(userDetails.getUsername(), saveOrder);
     }
 
-    @PutMapping("/putOwn/{id}")
-    public Order putOwnOrder(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, @RequestBody SaveOrder saveOrder) {
-        return orderService.putOrder(userDetails.getUsername(), id, saveOrder);
-    }
-
     @PutMapping("/{id}")
     public Order putOrder(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, @RequestBody SaveOrder saveOrder) {
         return orderService.putOrder(userDetails.getUsername(), id, saveOrder);
