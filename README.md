@@ -27,5 +27,5 @@ You can create, read, update and delete (CRUD) books, authors, publishers, users
 **For some CRUD operations you need to authorize/authenticate**  
 username and password for:
 * user: user, user
-* admin: admin, admin  
+* admin: admin, admin
 then copy the jwt token and include it in headers of your request with header Authorization, and with prefix Bearer_
