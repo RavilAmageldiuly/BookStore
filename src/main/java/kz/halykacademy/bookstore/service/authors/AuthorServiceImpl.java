@@ -73,18 +73,11 @@ public class AuthorServiceImpl implements AuthorService {
                 () -> new ResourceNotFoundException("Author not found. Invalid id supplied!")
         );
 
-        author.getBooksList().forEach(bookEntity -> {
-            bookEntity.removeAuthor(author);
-        });
+        author.getBooksList().forEach(bookEntity -> bookEntity.removeAuthor(author));
 
         author.getBooksList().clear();
         authorRepository.save(author);
 
         authorRepository.deleteById(id);
     }
-
-//    @Override
-//    public List<Author> getAuthorsByFIO(String authorFullName) {
-//
-//    }
 }

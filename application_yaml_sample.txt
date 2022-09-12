@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: * your data here *
+    driver-class-name: * your data here *
+    password: * your data here *
+    username: * your data here *
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    url: * your data here *
+    user: * your data here *
+    password: * your data here *
+    baseline-version: 1.0
+server:
+  port: * your data here *
+
+jwt:
+  token:
+    secret: banana
+    expired: 10800000

@@ -22,12 +22,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = UserForbiddenException.class)
-    protected ResponseEntity<Object> handleBlockedUserException(UserForbiddenException exception) {
+    protected ResponseEntity<Object> handleUserForbiddenException(UserForbiddenException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(value = UserBadRequestException.class)
-    protected ResponseEntity<Object> handlePriceExceedsLimitException(UserBadRequestException exception) {
+    protected ResponseEntity<Object> handleUserBadRequestException(UserBadRequestException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomError(exception.getMessage(), LocalDateTime.now()));
     }
 }
