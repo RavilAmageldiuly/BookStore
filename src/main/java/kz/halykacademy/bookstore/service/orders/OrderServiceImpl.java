@@ -9,7 +9,6 @@ import kz.halykacademy.bookstore.dao.users.UserEntity;
 import kz.halykacademy.bookstore.service.users.UserServiceImpl;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.exceptionHandling.UserBadRequestException;
-import kz.halykacademy.bookstore.web.exceptionHandling.UserForbiddenException;
 import kz.halykacademy.bookstore.web.orders.Order;
 import kz.halykacademy.bookstore.web.orders.SaveOrder;
 import lombok.RequiredArgsConstructor;
@@ -65,26 +64,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order).toDto();
     }
 
-    @Override
-    public Order putOrder(String username, Long orderId, SaveOrder saveOrder) {
-
-        OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order not found! Invalid id supplied"));
-        UserEntity user = userService.findByUsername(username);
-        UserEntity owner = order.getUser();
-
-        if (!owner.equals(user)) {
-            throw new UserForbiddenException("Order does not belong to the current user!");
-        }
-
-        returnBooks(order.getOrderedBooks());
-        order.getOrderedBooks().clear();
-        order.setOrderedBooks(getOrderBooks(order, saveOrder));
-
-        //      Bug in hibernate!!!
-
-        return orderRepository.save(order).toDto();
-    }
-
     @Transactional
     public Order changeOrderStatus(String newStatus, Long id) {
         if (!orderRepository.existsById(id))
@@ -129,6 +108,7 @@ public class OrderServiceImpl implements OrderService {
         for (int i = 0; i < saveOrder.getOrderedBooks().size(); i++) {
             total += orderedBooks.get(i).getPrice() * bookAmount.get(i);
             if (total > 10000) {
+                orderRepository.delete(orderRepository.findTopByOrderByOrderIdDesc());
                 throw new UserBadRequestException("Total price of order should be less than 10000₸.");
             }
         }

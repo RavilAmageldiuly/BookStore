@@ -56,18 +56,18 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User changePassword(String username, String password) {
-        return userRepository.getReferenceById(
-                (long) userRepository.updateUserPassword(username, passwordEncoder.encode(password))
-        ).toDto();
+        userRepository.updateUserPassword(username, passwordEncoder.encode(password));
+
+        return userRepository.findUserEntityByUsername(username).toDto();
     }
 
 
     @Transactional
     @Override
     public User changeUsername(String oldUsername, String newUsername) {
-        return userRepository.getReferenceById(
-                (long) userRepository.updateUsername(oldUsername, newUsername)
-        ).toDto();
+        userRepository.updateUsername(oldUsername, newUsername);
+
+        return userRepository.findUserEntityByUsername(newUsername).toDto();
     }
 
     @Override

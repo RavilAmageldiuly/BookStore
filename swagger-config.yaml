@@ -890,35 +890,6 @@ paths:
           description: Forbidden. Order belongs to another user
         404:
           description: Order not found. Invalid id supplied!
-    put:
-      tags:
-        - orders
-      description: Method for admins to change order
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/saveOrder'
-      responses:
-        200:
-          description: Successfully updated order
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/order'
-        400:
-          description: Invalid id format!
-        403:
-          description: Forbidden! Only users with role ADMIN can change status of an order
-        404:
-          description: User not found. Invalid id supplied!
     delete:
       tags:
         - orders

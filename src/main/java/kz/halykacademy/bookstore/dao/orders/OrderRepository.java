@@ -12,6 +12,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     List<OrderEntity> findOrderEntitiesByUser_Username(String username);
 
+    OrderEntity findTopByOrderByOrderIdDesc();
+
     @Modifying
     @Query("update OrderEntity o set o.orderStatus = ?1 where o.orderId = ?2")
     Integer changeOrderStatus(String newStatus, Long id);

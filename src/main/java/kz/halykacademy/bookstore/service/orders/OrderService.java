@@ -15,7 +15,5 @@ public interface OrderService {
 
     Order postOrder(String username, SaveOrder saveOrder);
 
-    Order putOrder(String username, Long orderId, SaveOrder saveOrder);
-
     void deleteOrder(Long id);
 }

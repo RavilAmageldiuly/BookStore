@@ -12,9 +12,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Modifying
     @Query("update UserEntity u set u.userPassword = ?2 where u.username = ?1")
-    Integer updateUserPassword(String username, String password);
+    void updateUserPassword(String username, String password);
 
     @Modifying
     @Query("update UserEntity u set u.username = ?2 where u.username = ?1")
-    Integer updateUsername(String oldUsername, String newUsername);
+    void updateUsername(String oldUsername, String newUsername);
 }
