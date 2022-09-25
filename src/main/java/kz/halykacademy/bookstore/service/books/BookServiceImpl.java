@@ -7,6 +7,7 @@ import kz.halykacademy.bookstore.dao.books.BookRepository;
 import kz.halykacademy.bookstore.dao.genres.GenreEntity;
 import kz.halykacademy.bookstore.dao.genres.GenreRepository;
 import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
+import kz.halykacademy.bookstore.service.MainService;
 import kz.halykacademy.bookstore.web.books.Book;
 import kz.halykacademy.bookstore.web.books.SaveBook;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class BookServiceImpl implements BookService {
+public class BookServiceImpl implements MainService<Book, SaveBook> {
 
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
@@ -42,7 +43,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book getBook(long id) {
+    public Book getIndividual(long id) {
         return bookRepository.findById(id)
                 .map(BookEntity::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found. Invalid id supplied!"));
@@ -51,7 +52,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public Book putBook(long id, SaveBook saveBook) {
+    public Book putIndividual(long id, SaveBook saveBook) {
         if (!bookRepository.existsById(id))
             throw new ResourceNotFoundException("Book not found. Invalid id supplied!");
 
@@ -74,7 +75,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public Book postBook(SaveBook saveBook) {
+    public Book postIndividual(SaveBook saveBook) {
 
         return bookRepository.save(
                 new BookEntity(
@@ -94,7 +95,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBook(long id) {
+    public void deleteIndividual(long id) {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book not found. Invalid id supplied!");
         }
@@ -102,7 +103,6 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
-    @Override
     public List<Book> getBooksByTitle(String title) {
         return bookRepository.getBookEntitiesByTitleContainingIgnoreCase(title).stream().map(BookEntity::toDto).collect(Collectors.toList());
     }

@@ -33,22 +33,22 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public Author findOne(@PathVariable Long id) {
-        return authorService.getAuthor(id);
+        return authorService.getIndividual(id);
     }
 
     @PostMapping
     public Author postAuthor(@RequestBody SaveAuthor saveAuthor) {
-        return authorService.postAuthor(saveAuthor);
+        return authorService.postIndividual(saveAuthor);
     }
 
     @PutMapping("/{id}")
     public Author putAuthor(@PathVariable Long id, @RequestBody SaveAuthor author) {
-        return authorService.putAuthor(id, author);
+        return authorService.putIndividual(id, author);
     }
 
     @DeleteMapping("/{id}")
     public void deleteAuthor(@PathVariable Long id) {
-        authorService.deleteAuthor(id);
+        authorService.deleteIndividual(id);
     }
 
     @GetMapping("/findByGenres")

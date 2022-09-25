@@ -28,22 +28,22 @@ public class PublisherController {
 
     @GetMapping("/{id}")
     public Publisher findOne(@PathVariable Long id) {
-        return publisherService.getPublisher(id);
+        return publisherService.getIndividual(id);
     }
 
     @PostMapping()
     public Publisher savePublisher(@RequestBody SavePublisher publisher) {
-        return publisherService.postPublisher(publisher);
+        return publisherService.postIndividual(publisher);
     }
 
     @PutMapping("/{id}")
     public Publisher updatePublisher(@PathVariable Long id, @RequestBody SavePublisher publisher) {
-        return publisherService.putPublisher(id, publisher);
+        return publisherService.putIndividual(id, publisher);
     }
 
     @DeleteMapping("/{id}")
     public void deletePublisher(@PathVariable Long id) {
-        publisherService.deletePublisher(id);
+        publisherService.deleteIndividual(id);
     }
 
     @GetMapping("/findByName")

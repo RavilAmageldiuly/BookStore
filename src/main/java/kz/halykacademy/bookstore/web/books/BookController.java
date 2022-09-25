@@ -30,22 +30,22 @@ public class BookController {
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
-        return bookService.getBook(id);
+        return bookService.getIndividual(id);
     }
 
     @PostMapping
     public Book postBook(@RequestBody SaveBook book) {
-        return bookService.postBook(book);
+        return bookService.postIndividual(book);
     }
 
     @PutMapping("/{id}")
     public Book putBook(@PathVariable Long id, @RequestBody SaveBook book) {
-        return bookService.putBook(id, book);
+        return bookService.putIndividual(id, book);
     }
 
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable Long id) {
-        bookService.deleteBook(id);
+        bookService.deleteIndividual(id);
     }
 
     @GetMapping("/findByTitle")

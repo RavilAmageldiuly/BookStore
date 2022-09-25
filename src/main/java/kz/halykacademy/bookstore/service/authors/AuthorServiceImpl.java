@@ -2,6 +2,7 @@ package kz.halykacademy.bookstore.service.authors;
 
 import kz.halykacademy.bookstore.dao.authors.AuthorEntity;
 import kz.halykacademy.bookstore.dao.authors.AuthorRepository;
+import kz.halykacademy.bookstore.service.MainService;
 import kz.halykacademy.bookstore.web.authors.Author;
 import kz.halykacademy.bookstore.web.authors.SaveAuthor;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class AuthorServiceImpl implements AuthorService {
+public class AuthorServiceImpl implements MainService<Author, SaveAuthor> {
 
     private final AuthorRepository authorRepository;
 
@@ -30,7 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author getAuthor(long id) {
+    public Author getIndividual(long id) {
         return authorRepository.findById(id)
                 .map(AuthorEntity::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found. Invalid id supplied!"));
@@ -38,7 +39,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public Author putAuthor(long id, SaveAuthor author) {
+    public Author putIndividual(long id, SaveAuthor author) {
         if (!authorRepository.existsById(id))
             throw new ResourceNotFoundException("Author not found. Invalid id supplied!");
         authorRepository.updateAuthorById(
@@ -53,7 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author postAuthor(SaveAuthor saveAuthor) {
+    public Author postIndividual(SaveAuthor saveAuthor) {
         AuthorEntity saved = authorRepository.save(
                 new AuthorEntity(
                         null,
@@ -68,7 +69,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void deleteAuthor(long id) {
+    public void deleteIndividual(long id) {
         AuthorEntity author = authorRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Author not found. Invalid id supplied!")
         );

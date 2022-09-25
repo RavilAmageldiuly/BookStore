@@ -2,6 +2,7 @@ package kz.halykacademy.bookstore.service.publishers;
 
 import kz.halykacademy.bookstore.dao.publishers.PublisherEntity;
 import kz.halykacademy.bookstore.dao.publishers.PublisherRepository;
+import kz.halykacademy.bookstore.service.MainService;
 import kz.halykacademy.bookstore.web.exceptionHandling.ResourceNotFoundException;
 import kz.halykacademy.bookstore.web.publishers.Publisher;
 import kz.halykacademy.bookstore.web.publishers.SavePublisher;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PublisherServiceImpl implements PublisherService{
+public class PublisherServiceImpl implements MainService<Publisher, SavePublisher> {
 
     private final PublisherRepository publisherRepository;
 
@@ -29,7 +30,7 @@ public class PublisherServiceImpl implements PublisherService{
     }
 
     @Override
-    public Publisher getPublisher(long id) {
+    public Publisher getIndividual(long id) {
         return publisherRepository.findById(id)
                 .map(PublisherEntity::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Publisher not found. Invalid id supplied!"));
@@ -37,7 +38,7 @@ public class PublisherServiceImpl implements PublisherService{
 
     @Transactional
     @Override
-    public Publisher putPublisher(long id, SavePublisher publisher) {
+    public Publisher putIndividual(long id, SavePublisher publisher) {
         if (!publisherRepository.existsById(id))
             throw new ResourceNotFoundException("Publisher not found. Invalid id supplied!");
         publisherRepository.updatePublisherById(id, publisher.getName());
@@ -45,7 +46,7 @@ public class PublisherServiceImpl implements PublisherService{
     }
 
     @Override
-    public Publisher postPublisher(SavePublisher savePublisher) {
+    public Publisher postIndividual(SavePublisher savePublisher) {
         PublisherEntity saved = publisherRepository.save(
                 new PublisherEntity(
                         null,
@@ -57,13 +58,12 @@ public class PublisherServiceImpl implements PublisherService{
     }
 
     @Override
-    public void deletePublisher(long id) {
+    public void deleteIndividual(long id) {
         if (!publisherRepository.existsById(id))
             throw new ResourceNotFoundException("Publisher not found. Invalid id supplied!");
         publisherRepository.deleteById(id);
     }
 
-    @Override
     public List<Publisher> getPublishersByName(String name) {
         return publisherRepository.getPublisherEntitiesByNameContainingIgnoreCase(name).stream().map(PublisherEntity::toDto).collect(Collectors.toList());
     }
