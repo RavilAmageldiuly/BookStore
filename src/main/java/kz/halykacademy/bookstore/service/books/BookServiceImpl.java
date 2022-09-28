@@ -144,35 +144,19 @@ public class BookServiceImpl implements MainService<Book, SaveBook> {
         HashMap<BookEntity, Integer> booksByGenreWithOverlap = new HashMap<>();
 
         for (BookEntity book : bookRepository.findAll()) {
-            if (overlapCount(book, genres) > 0)
-                booksByGenreWithOverlap.put(book, overlapCount(book, genres));
+            int checkOverlap = overlapCount(book, genres);
+            if (checkOverlap > 0)
+                booksByGenreWithOverlap.put(book, checkOverlap);
         }
 
-        booksByGenre = sortValues(booksByGenreWithOverlap);
-
-        Collections.reverse(booksByGenre);
+        booksByGenre = booksByGenreWithOverlap.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getValue))
+                .sorted(Collections.reverseOrder())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
         return booksByGenre;
 
-    }
-
-    private List sortValues(HashMap map) {
-        List list = new LinkedList(map.entrySet());
-        Collections.sort(list, new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                return ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue());
-            }
-        });
-
-        List sortedList = new ArrayList<>();
-
-        for (Iterator it = list.iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            sortedList.add(entry.getKey());
-        }
-
-        return sortedList;
     }
 
     public List<AuthorEntity> getAuthorsByGenre(List<String> genres) {
@@ -183,7 +167,10 @@ public class BookServiceImpl implements MainService<Book, SaveBook> {
 
         int counter = 0;
         for (AuthorEntity author : allAuthors) {
-            Set<String> allAuthorGenres = author.getBooksList().stream().map(BookEntity::getGenre).flatMap(Collection::stream).collect(Collectors.toSet());
+            Set<String> allAuthorGenres = author.getBooksList().stream()
+                    .map(BookEntity::getGenre)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
             for (String genre : genres) {
                 if (allAuthorGenres.contains(formatGenre(genre))) {
                     counter++;
@@ -194,9 +181,11 @@ public class BookServiceImpl implements MainService<Book, SaveBook> {
             counter = 0;
         }
 
-        sortedAuthors = sortValues(authorsWithOverlap);
-
-        Collections.reverse(sortedAuthors);
+        sortedAuthors = authorsWithOverlap.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getValue))
+                .sorted(Collections.reverseOrder())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
         return sortedAuthors;
     }

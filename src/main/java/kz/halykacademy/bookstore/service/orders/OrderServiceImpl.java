@@ -103,17 +103,17 @@ public class OrderServiceImpl implements OrderService {
             ));
         }
 
-        int total = 0;
+        int count = 0;
 
         for (int i = 0; i < saveOrder.getOrderedBooks().size(); i++) {
-            total += orderedBooks.get(i).getPrice() * bookAmount.get(i);
-            if (total > 10000) {
+            count += orderedBooks.get(i).getPrice() * bookAmount.get(i);
+            if (count > 10000) {
                 orderRepository.delete(orderRepository.findTopByOrderByOrderIdDesc());
                 throw new UserBadRequestException("Total price of order should be less than 10000₸.");
             }
         }
 
-        int count = 0;
+        count = 0;
 
         for (BookEntity book : orderedBooks) {
             OrderBook orderBook = new OrderBook();
